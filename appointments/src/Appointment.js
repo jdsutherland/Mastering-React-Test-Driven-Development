@@ -5,5 +5,11 @@ export const Appointment = ({ customer: { firstName } }) => (
 );
 
 export const AppointmentsDayView = ({ appointments }) => (
-  <div id='appointmentsDayView'></div>
+  <div id='appointmentsDayView'>
+    <ol>
+      {appointments.map((appointment) => (
+        <div key={appointment.startsAt}></div>
+      ))}
+    </ol>
+  </div>
 );
