@@ -31,9 +31,22 @@ describe('Appointment', () => {
 
 describe('AppointmentsDayView', () => {
   let container
+  let today
+  let appointments
 
   beforeEach(() => {
     container = document.createElement('div');
+    today = new Date();
+    appointments = [
+      {
+        startsAt: today.setHours(12, 0),
+        customer: { firstName: 'Ashley' }
+      },
+      {
+        startsAt: today.setHours(13, 0),
+        customer: { firstName: 'Jordan' }
+      }
+    ];
   });
 
   const render = component => ReactDOM.render(component, container)
@@ -45,12 +58,6 @@ describe('AppointmentsDayView', () => {
   });
 
   it('renders multiple appointments in an ol element', () => {
-    const today = new Date();
-    const appointments = [
-      { startsAt: today.setHours(12, 0) },
-      { startsAt: today.setHours(13, 0) }
-    ];
-
     render(<AppointmentsDayView appointments={appointments} />);
 
     expect(container.querySelector('ol')).not.toBeNull();
@@ -58,12 +65,6 @@ describe('AppointmentsDayView', () => {
   });
 
   it('renders each appointment in an li', () => {
-    const today = new Date();
-    const appointments = [
-      { startsAt: today.setHours(12, 0) },
-      { startsAt: today.setHours(13, 0) }
-    ];
-
     render(<AppointmentsDayView appointments={appointments} />);
 
     expect(container.querySelectorAll('li')).toHaveLength(2);
@@ -71,5 +72,13 @@ describe('AppointmentsDayView', () => {
     expect(container.querySelectorAll('li')[1].textContent).toEqual('13:00')
   });
 
-});
+  it('initially shows a message saying there are no appointments today', () => {
+    render(<AppointmentsDayView appointments={[]} />);
+    expect(container.textContent).toMatch('There are no appointments scheduled for today.');
+  });
 
+  it('selects the first appointment by default', () => {
+    render(<AppointmentsDayView appointments={appointments} />);
+    expect(container.textContent).toMatch('Ashley');
+  });
+});
