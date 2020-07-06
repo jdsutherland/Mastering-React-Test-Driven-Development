@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactTestUtils from 'react-dom/test-utils';
 import { createContainer } from './domManipulators';
 import { AppointmentForm } from '../src/AppointmentForm';
 
@@ -35,6 +36,37 @@ describe('AppointmentForm', () => {
     it('assigns an id that matches the label id', () => {
       render(<AppointmentForm />)
       expect(field(fieldName).id).toEqual(fieldName)
+    });
+
+  const itSubmitsExistingValue = (fieldName, value) =>
+    it('saves existing value when submitted', async () => {
+      expect.hasAssertions();
+      render(
+        <AppointmentForm
+          { ...{[fieldName]: value} }
+          onSubmit={props =>
+              expect(props[fieldName]).toEqual(value)
+          }
+        />
+      )
+      await ReactTestUtils.Simulate.submit(form('appointment'));
+    });
+
+  const itSubmitsNewValue = (fieldName, value) =>
+    it('saves new value when submitted', async () => {
+      expect.hasAssertions();
+      render(
+        <AppointmentForm
+          { ...{[fieldName]: value} }
+          onSubmit={props =>
+              expect(props[fieldName]).toEqual(value)
+          }
+        />
+      )
+      await ReactTestUtils.Simulate.change(field(fieldName), {
+        target: { value }
+      });
+      await ReactTestUtils.Simulate.submit(form('appointment'));
     });
 
   describe('service field', () => {
@@ -75,7 +107,8 @@ describe('AppointmentForm', () => {
 
     itRendersALabel('service', 'Salon service')
     itAssignsAnIdThatMatchesTheLabelId('service')
-
+    itSubmitsExistingValue('service', 'value')
+    itSubmitsNewValue('service', 'newValue')
   });
 
 });
