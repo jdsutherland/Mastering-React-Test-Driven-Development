@@ -11,6 +11,8 @@ describe('AppointmentForm', () => {
 
   const form = id => container.querySelector(`form[id=${id}]`)
   const field = name => form('appointment').elements[name]
+  const labelFor = formElement =>
+    container.querySelector(`label[for="${formElement}"]`)
 
   const findOption = (dropdownNode, textContent) => {
     const options = Array.from(dropdownNode.childNodes);
@@ -21,6 +23,19 @@ describe('AppointmentForm', () => {
     render(<AppointmentForm />);
     expect(form('appointment')).not.toBeNull();
   });
+
+  const itRendersALabel = (fieldName, text) =>
+    it('renders a label', () => {
+      render(<AppointmentForm />)
+      expect(labelFor(fieldName)).not.toBeNull()
+      expect(labelFor(fieldName).textContent).toEqual(text)
+    });
+
+  const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
+    it('assigns an id that matches the label id', () => {
+      render(<AppointmentForm />)
+      expect(field(fieldName).id).toEqual(fieldName)
+    });
 
   describe('service field', () => {
     it('renders as a select box', () => {
@@ -57,6 +72,10 @@ describe('AppointmentForm', () => {
       const option = findOption(field('service'), 'Blow-dry')
       expect(option.selected).toBeTruthy();
     });
+
+    itRendersALabel('service', 'Salon service')
+    itAssignsAnIdThatMatchesTheLabelId('service')
+
   });
 
 });

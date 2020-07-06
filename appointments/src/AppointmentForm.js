@@ -6,8 +6,10 @@ export const AppointmentForm = ({
 }) => {
 
   return <form id="appointment">
+    <label htmlFor="service">Salon service</label>
     <select
       name="service"
+      id="service"
       value={service}
       readOnly>
       <option />
