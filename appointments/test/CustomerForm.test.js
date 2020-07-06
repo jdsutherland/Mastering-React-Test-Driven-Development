@@ -20,6 +20,14 @@ describe('CustomerForm', () => {
     expect(form('customer')).not.toBeNull()
   });
 
+  it('has a submit button', () => {
+    render(<CustomerForm />);
+    const submitButton = container.querySelector(
+      'input[type="submit"]'
+    );
+    expect(submitButton).not.toBeNull();
+  });
+
   const itRendersAsATextBox = (fieldName) =>
     it('renders as a text box', () => {
       render(<CustomerForm />)
