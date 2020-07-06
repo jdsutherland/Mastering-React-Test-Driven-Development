@@ -10,6 +10,7 @@ describe('AppointmentForm', () => {
   });
 
   const form = id => container.querySelector(`form[id=${id}]`)
+  const field = name => form('appointment').elements[name]
 
   it('renders a form', () => {
     render(<AppointmentForm />);
@@ -20,7 +21,7 @@ describe('AppointmentForm', () => {
     it('renders as a select box', () => {
       render(<AppointmentForm />);
       expect(form('appointment').elements.service).not.toBeNull();
-      expect(form('appointment').elements.service.tagName).toEqual('SELECT')
+      expect(field('service').tagName).toEqual('SELECT')
     });
   });
 
