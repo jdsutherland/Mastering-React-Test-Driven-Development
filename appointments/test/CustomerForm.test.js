@@ -46,13 +46,13 @@ describe('CustomerForm', () => {
     });
 
   const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
-    it('assigns an id that matches the label id to the first name field', () => {
+    it('assigns an id that matches the label id', () => {
       render(<CustomerForm />)
       expect(field(fieldName).id).toEqual(fieldName)
     });
 
   const itSubmitsExistingValue = (fieldName, value) =>
-    it('saves existing first name when submitted', async () => {
+    it('saves existing value when submitted', async () => {
       expect.hasAssertions();
       render(
         <CustomerForm
@@ -66,7 +66,7 @@ describe('CustomerForm', () => {
     });
 
   const itSubmitsNewValue = (fieldName, value) =>
-    it('saves new first name when submitted', async () => {
+    it('saves new value when submitted', async () => {
       expect.hasAssertions();
       render(
         <CustomerForm
@@ -88,6 +88,24 @@ describe('CustomerForm', () => {
     itRendersALabel('firstName', 'First name')
     itAssignsAnIdThatMatchesTheLabelId('firstName')
     itSubmitsExistingValue('firstName', 'value')
-    itSubmitsNewValue('firstName', 'value')
+    itSubmitsNewValue('firstName', 'newValue')
+  });
+
+  describe('last name field', () => {
+    itRendersAsATextBox('lastName')
+    itIncludesTheExistingValue('lastName')
+    itRendersALabel('lastName', 'Last name')
+    itAssignsAnIdThatMatchesTheLabelId('lastName')
+    itSubmitsExistingValue('lastName', 'value')
+    itSubmitsNewValue('lastName', 'newValue')
+  });
+
+  describe('phone number field', () => {
+    itRendersAsATextBox('phoneNumber')
+    itIncludesTheExistingValue('phoneNumber')
+    itRendersALabel('phoneNumber', 'Phone number')
+    itAssignsAnIdThatMatchesTheLabelId('phoneNumber')
+    itSubmitsExistingValue('phoneNumber', '12345')
+    itSubmitsNewValue('phoneNumber', '56789')
   });
 });
