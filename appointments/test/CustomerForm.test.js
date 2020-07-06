@@ -45,43 +45,49 @@ describe('CustomerForm', () => {
       expect(labelFor(fieldName).textContent).toEqual(text)
     });
 
-  describe('first name field', () => {
-    itRendersAsATextBox('firstName')
-    itIncludesTheExistingValue('firstName')
-    itRendersALabel('firstName', 'First name')
-
+  const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
     it('assigns an id that matches the label id to the first name field', () => {
       render(<CustomerForm />)
-      expect(field('firstName').id).toEqual('firstName')
+      expect(field(fieldName).id).toEqual(fieldName)
     });
 
+  const itSubmitsExistingValue = (fieldName, value) =>
     it('saves existing first name when submitted', async () => {
       expect.hasAssertions();
       render(
         <CustomerForm
-          firstName='Ashley'
-          onSubmit={ ({ firstName }) =>
-              expect(firstName).toEqual('Ashley')
+          { ...{[fieldName]: value} }
+          onSubmit={props =>
+              expect(props[fieldName]).toEqual(value)
           }
         />
       )
       await ReactTestUtils.Simulate.submit(form('customer'));
     });
 
+  const itSubmitsNewValue = (fieldName, value) =>
     it('saves new first name when submitted', async () => {
       expect.hasAssertions();
       render(
         <CustomerForm
-          firstName='Ashley'
-          onSubmit={ ({ firstName }) =>
-              expect(firstName).toEqual('Jamie')
+          { ...{[fieldName]: value} }
+          onSubmit={props =>
+              expect(props[fieldName]).toEqual(value)
           }
         />
       )
-      await ReactTestUtils.Simulate.change(field('firstName'), {
-        target: { value: 'Jamie' }
+      await ReactTestUtils.Simulate.change(field(fieldName), {
+        target: { value }
       });
       await ReactTestUtils.Simulate.submit(form('customer'));
     });
+
+  describe('first name field', () => {
+    itRendersAsATextBox('firstName')
+    itIncludesTheExistingValue('firstName')
+    itRendersALabel('firstName', 'First name')
+    itAssignsAnIdThatMatchesTheLabelId('firstName')
+    itSubmitsExistingValue('firstName', 'value')
+    itSubmitsNewValue('firstName', 'value')
   });
 });
