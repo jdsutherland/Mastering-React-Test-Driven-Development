@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactTestUtils from 'react-dom/test-utils';
 import { createContainer } from './domManipulators';
-import { AppointmentForm } from '../src/AppointmentForm';
+import { AppointmentForm, TimeSlotTable } from '../src/AppointmentForm';
 
 describe('AppointmentForm', () => {
   let render, container
@@ -109,6 +109,13 @@ describe('AppointmentForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('service')
     itSubmitsExistingValue('service', 'value')
     itSubmitsNewValue('service', 'newValue')
+  });
+
+  describe('time slot table', () => {
+    it('renders a table for time slots', () => {
+      render(<AppointmentForm />);
+      expect(container.querySelector('table#time-slots')).not.toBeNull()
+    });
   });
 
 });

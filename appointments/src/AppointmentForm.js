@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 
+const TimeSlotTable = () => <table id="time-slots"></table>
+
 export const AppointmentForm = ({
   selectableServices,
   service,
@@ -24,6 +26,7 @@ export const AppointmentForm = ({
         <option key={s}>{s}</option>
       )}
     </select>
+    <TimeSlotTable />
   </form>
 }
 
