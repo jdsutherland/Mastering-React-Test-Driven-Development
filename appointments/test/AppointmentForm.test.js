@@ -4,16 +4,16 @@ import { createContainer } from './domManipulators';
 import { AppointmentForm, TimeSlotTable } from '../src/AppointmentForm';
 
 describe('AppointmentForm', () => {
-  let render, container
+  let render, container, element;
 
   beforeEach(() => {
-    ({ render, container } = createContainer());
+    ({ render, container, element } = createContainer());
   });
 
-  const form = id => container.querySelector(`form[id=${id}]`)
+  const form = id => element(`form[id=${id}]`)
   const field = name => form('appointment').elements[name]
   const labelFor = formElement =>
-    container.querySelector(`label[for="${formElement}"]`)
+    element(`label[for="${formElement}"]`)
   const startsAtField = index =>
     container.querySelectorAll(`input[name="startsAt"]`)[index];
 
@@ -113,7 +113,7 @@ describe('AppointmentForm', () => {
     itSubmitsNewValue('service', 'newValue')
   });
 
-  const timeSlotTable = () => container.querySelector('table#time-slots');
+  const timeSlotTable = () => element('table#time-slots');
 
   describe('time slot table', () => {
     const today = new Date();
