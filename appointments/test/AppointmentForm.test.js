@@ -4,10 +4,10 @@ import { createContainer } from './domManipulators';
 import { AppointmentForm, TimeSlotTable } from '../src/AppointmentForm';
 
 describe('AppointmentForm', () => {
-  let render, container, element;
+  let render, container, element, elements;
 
   beforeEach(() => {
-    ({ render, container, element } = createContainer());
+    ({ render, container, element, elements } = createContainer());
   });
 
   const form = id => element(`form[id=${id}]`)
@@ -15,7 +15,7 @@ describe('AppointmentForm', () => {
   const labelFor = formElement =>
     element(`label[for="${formElement}"]`)
   const startsAtField = index =>
-    container.querySelectorAll(`input[name="startsAt"]`)[index];
+    elements(`input[name="startsAt"]`)[index];
 
   const findOption = (dropdownNode, textContent) => {
     const options = Array.from(dropdownNode.childNodes);

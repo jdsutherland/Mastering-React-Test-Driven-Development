@@ -5,11 +5,11 @@ import { Appointment, AppointmentsDayView } from '../src/AppointmentsDayView';
 import { createContainer } from './domManipulators';
 
 describe('Appointment', () => {
-  let render, container, element;
+  let render, container, element, elements;
   let customer = {}
 
   beforeEach(() => {
-    ({ render, container, element } = createContainer());
+    ({ render, container, element, elements } = createContainer());
   });
 
   const appointmentTable = () =>
@@ -70,10 +70,10 @@ describe('Appointment', () => {
 describe('AppointmentsDayView', () => {
   let today
   let appointments
-  let render, container, element;
+  let render, container, element, elements;
 
   beforeEach(() => {
-    ({ render, container, element } = createContainer());
+    ({ render, container, element, elements } = createContainer());
     today = new Date();
     appointments = [
       {
@@ -103,9 +103,9 @@ describe('AppointmentsDayView', () => {
   it('renders each appointment in an li', () => {
     render(<AppointmentsDayView appointments={appointments} />);
 
-    expect(container.querySelectorAll('li')).toHaveLength(2);
-    expect(container.querySelectorAll('li')[0].textContent).toEqual('12:00')
-    expect(container.querySelectorAll('li')[1].textContent).toEqual('13:00')
+    expect(elements('li')).toHaveLength(2);
+    expect(elements('li')[0].textContent).toEqual('12:00')
+    expect(elements('li')[1].textContent).toEqual('13:00')
   });
 
   it('initially shows a message saying there are no appointments today', () => {
@@ -121,16 +121,16 @@ describe('AppointmentsDayView', () => {
   it('has a button element in each li', () => {
     render(<AppointmentsDayView appointments={appointments} />);
     expect(
-      container.querySelectorAll('li > button')
+      elements('li > button')
     ).toHaveLength(2);
     expect(
-      container.querySelectorAll('li > button')[0].type
+      elements('li > button')[0].type
     ).toEqual('button');
   });
 
   it('renders another appointment when selected', () => {
     render(<AppointmentsDayView appointments={appointments} />);
-    const button = container.querySelectorAll('button')[1];
+    const button = elements('button')[1];
     ReactTestUtils.Simulate.click(button);
     expect(container.textContent).toMatch('Jordan');
   });
