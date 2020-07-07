@@ -2,19 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-dom/test-utils';
 import { Appointment, AppointmentsDayView } from '../src/AppointmentsDayView';
+import { createContainer } from './domManipulators';
 
 describe('Appointment', () => {
-  let container
+  let render, container, element;
   let customer = {}
 
   beforeEach(() => {
-    container = document.createElement('div');
+    ({ render, container, element } = createContainer());
   });
 
-  const render = component => ReactDOM.render(component, container)
-
   const appointmentTable = () =>
-    container.querySelector('#appointmentView > table');
+    element('#appointmentView > table');
 
   it('renders a table', () => {
     render(<Appointment customer={customer} />);
@@ -60,8 +59,8 @@ describe('Appointment', () => {
     render(
       <Appointment customer={customer} startsAt={timestamp} />
     );
-    expect(container.querySelector('h3')).not.toBeNull()
-    expect(container.querySelector('h3').textContent).toEqual(
+    expect(element('h3')).not.toBeNull()
+    expect(element('h3').textContent).toEqual(
       'Today’s appointment at 09:00'
     )
   });
@@ -69,12 +68,12 @@ describe('Appointment', () => {
 });
 
 describe('AppointmentsDayView', () => {
-  let container
   let today
   let appointments
+  let render, container, element;
 
   beforeEach(() => {
-    container = document.createElement('div');
+    ({ render, container, element } = createContainer());
     today = new Date();
     appointments = [
       {
@@ -88,8 +87,6 @@ describe('AppointmentsDayView', () => {
     ];
   });
 
-  const render = component => ReactDOM.render(component, container)
-
   it('renders a div with the correct id', () => {
     render(<AppointmentsDayView appointments={[]} />);
 
@@ -99,8 +96,8 @@ describe('AppointmentsDayView', () => {
   it('renders multiple appointments in an ol element', () => {
     render(<AppointmentsDayView appointments={appointments} />);
 
-    expect(container.querySelector('ol')).not.toBeNull();
-    expect(container.querySelector('ol').children).toHaveLength(2);
+    expect(element('ol')).not.toBeNull();
+    expect(element('ol').children).toHaveLength(2);
   });
 
   it('renders each appointment in an li', () => {
