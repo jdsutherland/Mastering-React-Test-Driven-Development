@@ -10,11 +10,12 @@ describe('CustomerForm', () => {
     ({ render, container } = createContainer())
   });
 
-  const singleArgumentSpy = () => {
-    let receivedArgument;
+  const spy = () => {
+    let receivedArguments;
     return {
-      fn: arg => (receivedArgument = arg),
-      receivedArgument: () => receivedArgument
+      fn: (...args) => (receivedArguments = args),
+      receivedArguments: () => receivedArguments,
+      receivedArgument: n => receivedArguments[n]
     }
   }
 
@@ -69,7 +70,7 @@ describe('CustomerForm', () => {
 
   const itSubmitsExistingValue = (fieldName, value) =>
     it('saves existing value when submitted', () => {
-      let submitSpy = singleArgumentSpy();
+      let submitSpy = spy();
 
       expect.hasAssertions();
       render(
@@ -78,8 +79,8 @@ describe('CustomerForm', () => {
           onSubmit={submitSpy.fn}
         />)
       ReactTestUtils.Simulate.submit(form('customer'));
-      expect(submitSpy.receivedArgument()).toBeDefined();
-      expect(submitSpy.receivedArgument()[fieldName]).toEqual(value);
+      expect(submitSpy.receivedArguments()).toBeDefined();
+      expect(submitSpy.receivedArgument(0)[fieldName]).toEqual(value);
     });
 
   const itSubmitsNewValue = (fieldName, value) =>
