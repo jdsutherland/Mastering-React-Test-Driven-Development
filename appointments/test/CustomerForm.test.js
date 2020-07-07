@@ -58,7 +58,7 @@ describe('CustomerForm', () => {
   it('calls fetch w/ the right props when submitting data', async () => {
     render(<CustomerForm />);
 
-    ReactTestUtils .Simulate.submit(form('customer'));
+    ReactTestUtils.Simulate.submit(form('customer'));
 
     expect(window.fetch).toHaveBeenCalledWith('/customers',
       expect.objectContaining({
