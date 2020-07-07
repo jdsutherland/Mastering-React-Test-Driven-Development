@@ -116,6 +116,12 @@ describe('AppointmentForm', () => {
   const timeSlotTable = () => container.querySelector('table#time-slots');
 
   describe('time slot table', () => {
+    const today = new Date();
+    const availableTimeSlots = [
+      { startsAt: today.setHours(9, 0, 0, 0) },
+      { startsAt: today.setHours(9, 30, 0, 0) },
+    ];
+
     it('renders a table for time slots', () => {
       render(<AppointmentForm />);
       expect(timeSlotTable()).not.toBeNull()
@@ -149,11 +155,6 @@ describe('AppointmentForm', () => {
     });
 
     it('renders a radio button for each time slot', () => {
-      const today = new Date();
-      const availableTimeSlots = [
-        { startsAt: today.setHours(9, 0, 0, 0) },
-        { startsAt: today.setHours(9, 30, 0, 0) },
-      ];
       render(
         <AppointmentForm
           availableTimeSlots={availableTimeSlots}
@@ -172,11 +173,6 @@ describe('AppointmentForm', () => {
     });
 
     it('sets radio button values to the idx of the corresponding appt', () => {
-      const today = new Date();
-      const availableTimeSlots = [
-        { startsAt: today.setHours(9, 0, 0, 0) },
-        { startsAt: today.setHours(9, 30, 0, 0) },
-      ];
       render(
         <AppointmentForm
           availableTimeSlots={availableTimeSlots}
@@ -190,11 +186,6 @@ describe('AppointmentForm', () => {
     });
 
     it('pre-selects the existing value', () => {
-      const today = new Date();
-      const availableTimeSlots = [
-        { startsAt: today.setHours(9, 0, 0, 0) },
-        { startsAt: today.setHours(9, 30, 0, 0) },
-      ];
       render(
         <AppointmentForm
           availableTimeSlots={availableTimeSlots}
@@ -206,11 +197,6 @@ describe('AppointmentForm', () => {
     });
 
     it('saves existing value when submitted', async () => {
-      const today = new Date();
-      const availableTimeSlots = [
-        { startsAt: today.setHours(9, 0, 0, 0) },
-        { startsAt: today.setHours(9, 30, 0, 0) },
-      ];
       expect.hasAssertions();
       render(
         <AppointmentForm
