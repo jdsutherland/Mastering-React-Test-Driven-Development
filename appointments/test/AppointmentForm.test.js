@@ -4,16 +4,20 @@ import { createContainer } from './domManipulators';
 import { AppointmentForm, TimeSlotTable } from '../src/AppointmentForm';
 
 describe('AppointmentForm', () => {
-  let render, container, element, elements;
+  let render, container, form, field, labelFor, element, elements;
 
   beforeEach(() => {
-    ({ render, container, element, elements } = createContainer());
+    ({
+      form,
+      field,
+      labelFor,
+      render,
+      container,
+      element,
+      elements
+    } = createContainer());
   });
 
-  const form = id => element(`form[id=${id}]`)
-  const field = name => form('appointment').elements[name]
-  const labelFor = formElement =>
-    element(`label[for="${formElement}"]`)
   const startsAtField = index =>
     elements(`input[name="startsAt"]`)[index];
 
@@ -37,7 +41,7 @@ describe('AppointmentForm', () => {
   const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
     it('assigns an id that matches the label id', () => {
       render(<AppointmentForm />)
-      expect(field(fieldName).id).toEqual(fieldName)
+      expect(field('appointment', fieldName).id).toEqual(fieldName)
     });
 
   const itSubmitsExistingValue = (fieldName, value) =>
@@ -65,7 +69,7 @@ describe('AppointmentForm', () => {
           }
         />
       )
-      await ReactTestUtils.Simulate.change(field(fieldName), {
+      await ReactTestUtils.Simulate.change(field('appointment', fieldName), {
         target: { value }
       });
       await ReactTestUtils.Simulate.submit(form('appointment'));
@@ -75,12 +79,12 @@ describe('AppointmentForm', () => {
     it('renders as a select box', () => {
       render(<AppointmentForm />);
       expect(form('appointment').elements.service).not.toBeNull();
-      expect(field('service').tagName).toEqual('SELECT')
+      expect(field('appointment', 'service').tagName).toEqual('SELECT')
     });
 
     it('initially has a blank value chosen', () => {
       render(<AppointmentForm />);
-      const firstNode = field('service').childNodes[0]
+      const firstNode = field('appointment', 'service').childNodes[0]
       expect(firstNode.value).toEqual('');
       expect(firstNode.selected).toBeTruthy()
     });
@@ -88,7 +92,7 @@ describe('AppointmentForm', () => {
     it('lists all salon services', () => {
       const selectableServices = ['Cut', 'Blow-dry'];
       render(<AppointmentForm selectableServices={selectableServices} />);
-      const optionNodes = Array.from(field('service').childNodes);
+      const optionNodes = Array.from(field('appointment', 'service').childNodes);
       const renderedServices = optionNodes.map(node => node.textContent);
       expect(renderedServices).toEqual(
         expect.arrayContaining(selectableServices)
@@ -103,7 +107,7 @@ describe('AppointmentForm', () => {
           service="Blow-dry"
         />
       );
-      const option = findOption(field('service'), 'Blow-dry')
+      const option = findOption(field('appointment', 'service'), 'Blow-dry')
       expect(option.selected).toBeTruthy();
     });
 
