@@ -18,7 +18,8 @@ export const CustomerForm = ({
       [target.name]: target.value
     }))
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     const result = await window.fetch('/customers', {
       method: 'POST',
       credentials: 'same-origin',

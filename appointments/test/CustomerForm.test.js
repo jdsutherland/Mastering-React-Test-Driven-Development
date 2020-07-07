@@ -111,6 +111,19 @@ describe('CustomerForm', () => {
     expect(saveSpy).not.toHaveBeenCalled()
   });
 
+  it('prevents the default action when submitting the form', async () => {
+    const preventDefaultSpy = spy();
+
+    render(<CustomerForm />);
+    await act(async () => {
+      ReactTestUtils.Simulate.submit(form('customer'), {
+        preventDefault: preventDefaultSpy.fn
+      });
+    });
+
+    expect(preventDefaultSpy).toHaveBeenCalled()
+  });
+
   const itRendersAsATextBox = (fieldName) =>
     it('renders as a text box', () => {
       render(<CustomerForm />)
