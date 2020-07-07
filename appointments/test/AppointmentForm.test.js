@@ -14,6 +14,8 @@ describe('AppointmentForm', () => {
   const field = name => form('appointment').elements[name]
   const labelFor = formElement =>
     container.querySelector(`label[for="${formElement}"]`)
+  const startsAtField = index =>
+    container.querySelectorAll(`input[name="startsAt"]`)[index];
 
   const findOption = (dropdownNode, textContent) => {
     const options = Array.from(dropdownNode.childNodes);
@@ -167,6 +169,24 @@ describe('AppointmentForm', () => {
       render(<AppointmentForm availableTimeSlots={[]}/>);
       const timesOfDay = timeSlotTable().querySelectorAll('input')
       expect(timesOfDay).toHaveLength(0);
+    });
+
+    it('sets radio button values to the idx of the corresponding appt', () => {
+      const today = new Date();
+      const availableTimeSlots = [
+        { startsAt: today.setHours(9, 0, 0, 0) },
+        { startsAt: today.setHours(9, 30, 0, 0) },
+      ];
+      render(
+        <AppointmentForm
+          availableTimeSlots={availableTimeSlots}
+          today={today}
+        />
+      )
+      expect(startsAtField(0).value).toEqual(
+        availableTimeSlots[0].startsAt.toString())
+      expect(startsAtField(1).value).toEqual(
+        availableTimeSlots[1].startsAt.toString())
     });
   });
 
