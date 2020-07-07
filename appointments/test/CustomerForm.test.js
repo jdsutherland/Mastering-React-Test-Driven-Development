@@ -4,10 +4,17 @@ import { createContainer } from './domManipulators'
 import { CustomerForm } from '../src/CustomerForm'
 
 describe('CustomerForm', () => {
-  let render, container;
+  const originalFetch = window.fetch;
+  let render, container, fetchSpy;
 
   beforeEach(() => {
     ({ render, container } = createContainer())
+    fetchSpy = spy();
+    window.fetch = fetchSpy.fn;
+  });
+
+  afterEach(() => {
+    window.fetch = originalFetch;
   });
 
   const spy = () => {
@@ -50,7 +57,6 @@ describe('CustomerForm', () => {
   });
 
   it('calls fetch w/ the right props when submitting data', async () => {
-    const fetchSpy = spy();
     render(<CustomerForm fetch={fetchSpy.fn} />);
 
     ReactTestUtils .Simulate.submit(form('customer'));
@@ -98,8 +104,6 @@ describe('CustomerForm', () => {
 
   const itSubmitsExistingValue = (fieldName, value) =>
     it('saves existing value when submitted', async () => {
-      let fetchSpy = spy();
-
       expect.hasAssertions();
       render(
         <CustomerForm
@@ -114,7 +118,6 @@ describe('CustomerForm', () => {
 
   const itSubmitsNewValue = (fieldName, value) =>
     it('saves new value when submitted', async () => {
-      const fetchSpy = spy();
       render(
         <CustomerForm
           { ...{[fieldName]: value} }
