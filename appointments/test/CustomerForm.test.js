@@ -51,7 +51,7 @@ describe('CustomerForm', () => {
 
   it('calls fetch w/ the right props when submitting data', async () => {
     const fetchSpy = spy();
-    render(<CustomerForm fetch={fetchSpy.fn} onSubmit={() => {}} />);
+    render(<CustomerForm fetch={fetchSpy.fn} />);
 
     ReactTestUtils .Simulate.submit(form('customer'));
 
@@ -105,7 +105,6 @@ describe('CustomerForm', () => {
         <CustomerForm
           { ...{[fieldName]: value} }
           fetch={fetchSpy.fn}
-          onSubmit={() => {}}
         />)
       ReactTestUtils.Simulate.submit(form('customer'));
 
@@ -120,7 +119,6 @@ describe('CustomerForm', () => {
         <CustomerForm
           { ...{[fieldName]: value} }
           fetch={fetchSpy.fn}
-          onSubmit={() => {}}
         />
       )
       ReactTestUtils.Simulate.change(field(fieldName), {
