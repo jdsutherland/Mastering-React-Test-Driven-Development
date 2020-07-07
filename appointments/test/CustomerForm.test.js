@@ -116,9 +116,8 @@ describe('CustomerForm', () => {
       ReactTestUtils.Simulate.submit(form('customer'));
     });
 
-    const errorElement = element('.error')
-    expect(errorElement).not.toBeNull()
-    expect(errorElement.textContent).toMatch('error occurred')
+    expect(element('.error')).not.toBeNull()
+    expect(element('.error').textContent).toMatch('error occurred')
   });
 
   const itRendersAsATextBox = (fieldName) =>
