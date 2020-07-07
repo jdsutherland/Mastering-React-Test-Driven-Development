@@ -1,11 +1,41 @@
 import React, { useState } from 'react'
 
-const TimeSlotTable = () => <table id="time-slots"></table>
+const dailyTimeSlots = (salonOpensAt, salonClosesAt) => {
+  const totalSlots = (salonClosesAt - salonOpensAt) * 2;
+  const startTime = new Date().setHours(salonOpensAt, 0, 0, 0);
+  const increment = 30 * 60 * 1000;
+  return Array(totalSlots)
+    .fill([startTime])
+    .reduce((acc, _, i) => [...acc, startTime + (i * increment)])
+}
+
+const toTimeValue = timestamp =>
+  new Date(timestamp).toTimeString().substring(0, 5)
+
+const TimeSlotTable = ({
+  salonOpensAt,
+  salonClosesAt
+}) => {
+  const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt)
+  return (
+    <table id="time-slots">
+      <tbody>
+        {timeSlots.map(timeSlot => (
+          <tr key={timeSlot}>
+            <th>{toTimeValue(timeSlot)}</th>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
 
 export const AppointmentForm = ({
   selectableServices,
   service,
-  onSubmit
+  onSubmit,
+  salonOpensAt,
+  salonClosesAt
 }) => {
   const [appointment, setAppointment] = useState({ service });
   const handleSelectBoxChange = ({ target: { value, name } }) =>
@@ -26,11 +56,16 @@ export const AppointmentForm = ({
         <option key={s}>{s}</option>
       )}
     </select>
-    <TimeSlotTable />
+    <TimeSlotTable
+      salonOpensAt={salonOpensAt}
+      salonClosesAt={salonClosesAt}
+    />
   </form>
 }
 
 AppointmentForm.defaultProps = {
+  salonOpensAt: 9,
+  salonClosesAt: 19,
   selectableServices: [
     'Cut',
     'Blow-dry',
