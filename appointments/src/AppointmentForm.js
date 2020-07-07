@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 
 const dailyTimeSlots = (salonOpensAt, salonClosesAt) => {
   const totalSlots = (salonClosesAt - salonOpensAt) * 2;
@@ -41,7 +41,8 @@ const RadioButtonIfAvailable = ({
   availableTimeSlots,
   date,
   timeSlot,
-  checkedTimeSlot
+  checkedTimeSlot,
+  handleChange
 }) => {
   const startsAt = mergeDateAndTime(date, timeSlot)
   if (availableTimeSlots.some(e => e.startsAt === startsAt)) {
@@ -52,7 +53,7 @@ const RadioButtonIfAvailable = ({
         type="radio"
         value={startsAt}
         checked={isChecked}
-        readOnly
+        onChange={handleChange}
       />
     )
   }
@@ -64,7 +65,8 @@ const TimeSlotTable = ({
   salonClosesAt,
   today,
   availableTimeSlots,
-  checkedTimeSlot
+  checkedTimeSlot,
+  handleChange
 }) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt)
   const dates = weeklyDateValues(today)
@@ -88,6 +90,7 @@ const TimeSlotTable = ({
                   date={date}
                   timeSlot={timeSlot}
                   checkedTimeSlot={checkedTimeSlot}
+                  handleChange={handleChange}
                 />
               </td>
             ))}
@@ -118,6 +121,15 @@ export const AppointmentForm = ({
       [name]: value
     }));
 
+  const handleStartsAtChange = useCallback(
+    ({ target: { value } }) =>
+    setAppointment(appointment => ({
+      ...appointment,
+      startsAt: parseInt(value)
+    })),
+    []
+  );
+
   return <form id="appointment" onSubmit={() => onSubmit(appointment)}>
     <label htmlFor="service">Salon service</label>
     <select
@@ -136,6 +148,7 @@ export const AppointmentForm = ({
       today={today}
       availableTimeSlots={availableTimeSlots}
       checkedTimeSlot={appointment.startsAt}
+      handleChange={handleStartsAtChange}
     />
   </form>
 }
