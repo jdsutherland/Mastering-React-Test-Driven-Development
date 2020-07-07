@@ -40,16 +40,19 @@ const mergeDateAndTime = (date, timeSlot) => {
 const RadioButtonIfAvailable = ({
   availableTimeSlots,
   date,
-  timeSlot
+  timeSlot,
+  checkedTimeSlot
 }) => {
   const startsAt = mergeDateAndTime(date, timeSlot)
-  if (availableTimeSlots.some(e =>
-    e.startsAt === mergeDateAndTime(date, timeSlot))) {
+  if (availableTimeSlots.some(e => e.startsAt === startsAt)) {
+    const isChecked = startsAt === checkedTimeSlot
     return (
       <input
         name="startsAt"
         type="radio"
         value={startsAt}
+        checked={isChecked}
+        readOnly
       />
     )
   }
@@ -60,7 +63,8 @@ const TimeSlotTable = ({
   salonOpensAt,
   salonClosesAt,
   today,
-  availableTimeSlots
+  availableTimeSlots,
+  checkedTimeSlot
 }) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt)
   const dates = weeklyDateValues(today)
@@ -83,6 +87,7 @@ const TimeSlotTable = ({
                   availableTimeSlots={availableTimeSlots}
                   date={date}
                   timeSlot={timeSlot}
+                  checkedTimeSlot={checkedTimeSlot}
                 />
               </td>
             ))}
@@ -100,9 +105,13 @@ export const AppointmentForm = ({
   salonOpensAt,
   salonClosesAt,
   today,
-  availableTimeSlots
+  availableTimeSlots,
+  startsAt
 }) => {
-  const [appointment, setAppointment] = useState({ service });
+  const [appointment, setAppointment] = useState({
+    service,
+    startsAt
+  });
   const handleSelectBoxChange = ({ target: { value, name } }) =>
     setAppointment(appointment => ({
       ...appointment,
@@ -126,6 +135,7 @@ export const AppointmentForm = ({
       salonClosesAt={salonClosesAt}
       today={today}
       availableTimeSlots={availableTimeSlots}
+      checkedTimeSlot={appointment.startsAt}
     />
   </form>
 }
