@@ -9,19 +9,38 @@ const dailyTimeSlots = (salonOpensAt, salonClosesAt) => {
     .reduce((acc, _, i) => [...acc, startTime + (i * increment)])
 }
 
+const weeklyDateValues = startDate => {
+  const midnight = new Date(startDate).setHours(0, 0, 0, 0)
+  const increment = 24 * 60 * 60 * 1000
+  return Array(7)
+    .fill([midnight])
+    .reduce((acc, _, i) => [...acc, midnight + (i * increment)])
+}
+
 const toTimeValue = timestamp =>
   new Date(timestamp).toTimeString().substring(0, 5)
 
+const toShortDate = timestamp => {
+  const [day, , dayOfMonth] = new Date(timestamp)
+    .toDateString()
+    .split(' ')
+  return `${day} ${dayOfMonth}`
+}
+
 const TimeSlotTable = ({
   salonOpensAt,
-  salonClosesAt
+  salonClosesAt,
+  today
 }) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt)
+  const dates = weeklyDateValues(today)
   return (
     <table id="time-slots">
       <thead>
         <tr>
           <th />
+          {dates.map(d =>
+            <th key={d}>{toShortDate(d)}</th>)}
         </tr>
       </thead>
       <tbody>
@@ -40,7 +59,8 @@ export const AppointmentForm = ({
   service,
   onSubmit,
   salonOpensAt,
-  salonClosesAt
+  salonClosesAt,
+  today
 }) => {
   const [appointment, setAppointment] = useState({ service });
   const handleSelectBoxChange = ({ target: { value, name } }) =>
@@ -64,6 +84,7 @@ export const AppointmentForm = ({
     <TimeSlotTable
       salonOpensAt={salonOpensAt}
       salonClosesAt={salonClosesAt}
+      today={today}
     />
   </form>
 }
@@ -71,6 +92,7 @@ export const AppointmentForm = ({
 AppointmentForm.defaultProps = {
   salonOpensAt: 9,
   salonClosesAt: 19,
+  today: new Date(),
   selectableServices: [
     'Cut',
     'Blow-dry',
