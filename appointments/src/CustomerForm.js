@@ -25,8 +25,10 @@ export const CustomerForm = ({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(customer)
     })
-    const customerWithId = await result.json();
-    onSave(customerWithId);
+    if (result.ok) {
+      const customerWithId = await result.json();
+      onSave(customerWithId);
+    }
   }
 
   return <form id="customer" onSubmit={handleSubmit}>
