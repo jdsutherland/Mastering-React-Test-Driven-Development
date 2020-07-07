@@ -4,7 +4,6 @@ export const CustomerForm = ({
   firstName,
   lastName,
   phoneNumber,
-  fetch
 }) => {
   const [customer, setCustomer] = useState({
     firstName,
