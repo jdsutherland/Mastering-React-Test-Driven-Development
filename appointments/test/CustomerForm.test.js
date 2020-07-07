@@ -4,7 +4,7 @@ import { createContainer } from './domManipulators'
 import {
   fetchResponseOk,
   fetchResponseError,
-  fetchRequestBody
+  requestBodyOf
 } from './spyHelpers'
 import { CustomerForm } from '../src/CustomerForm'
 
@@ -158,7 +158,7 @@ describe('CustomerForm', () => {
         />)
       ReactTestUtils.Simulate.submit(form('customer'));
 
-      expect(fetchRequestBody(fetchSpy)).toMatchObject({
+      expect(requestBodyOf(fetchSpy)).toMatchObject({
         [fieldName]: value
       });
     });
@@ -175,7 +175,7 @@ describe('CustomerForm', () => {
       });
       ReactTestUtils.Simulate.submit(form('customer'));
 
-      expect(fetchRequestBody(fetchSpy)).toMatchObject({
+      expect(requestBodyOf(fetchSpy)).toMatchObject({
         [fieldName]: value
       });
     });
