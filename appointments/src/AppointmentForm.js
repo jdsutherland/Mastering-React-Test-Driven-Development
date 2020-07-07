@@ -27,10 +27,21 @@ const toShortDate = timestamp => {
   return `${day} ${dayOfMonth}`
 }
 
+const mergeDateAndTime = (date, timeSlot) => {
+  const time = new Date(timeSlot);
+  return new Date(date).setHours(
+    time.getHours(),
+    time.getMinutes(),
+    time.getSeconds(),
+    time.getMilliseconds()
+  )
+}
+
 const TimeSlotTable = ({
   salonOpensAt,
   salonClosesAt,
-  today
+  today,
+  availableTimeSlots
 }) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt)
   const dates = weeklyDateValues(today)
@@ -49,7 +60,11 @@ const TimeSlotTable = ({
             <th>{toTimeValue(timeSlot)}</th>
             {dates.map(date => (
               <td key={date}>
-                <input type="radio" />
+                {availableTimeSlots.some(e =>
+                  e.startsAt === mergeDateAndTime(date, timeSlot)
+                ) ? <input type="radio" />
+                  : null
+                }
               </td>
             ))}
           </tr>
@@ -65,7 +80,8 @@ export const AppointmentForm = ({
   onSubmit,
   salonOpensAt,
   salonClosesAt,
-  today
+  today,
+  availableTimeSlots
 }) => {
   const [appointment, setAppointment] = useState({ service });
   const handleSelectBoxChange = ({ target: { value, name } }) =>
@@ -90,11 +106,13 @@ export const AppointmentForm = ({
       salonOpensAt={salonOpensAt}
       salonClosesAt={salonClosesAt}
       today={today}
+      availableTimeSlots={availableTimeSlots}
     />
   </form>
 }
 
 AppointmentForm.defaultProps = {
+  availableTimeSlots: [],
   salonOpensAt: 9,
   salonClosesAt: 19,
   today: new Date(),
