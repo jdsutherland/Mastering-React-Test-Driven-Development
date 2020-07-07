@@ -205,7 +205,27 @@ describe('AppointmentForm', () => {
       expect(startsAtField(0).checked).toEqual(true)
     });
 
+    it('saves existing value when submitted', async () => {
+      const today = new Date();
+      const availableTimeSlots = [
+        { startsAt: today.setHours(9, 0, 0, 0) },
+        { startsAt: today.setHours(9, 30, 0, 0) },
+      ];
+      expect.hasAssertions();
+      render(
+        <AppointmentForm
+          availableTimeSlots={availableTimeSlots}
+          today={today}
+          startsAt={availableTimeSlots[0].startsAt}
+          onSubmit={({ startsAt }) =>
+              expect(startsAt).toEqual(
+                availableTimeSlots[0].startsAt
+              )
+          }
+        />
+      );
+      ReactTestUtils.Simulate.submit(form('appointment'));
+    });
   });
-
 });
 
