@@ -19,6 +19,18 @@ describe('CustomerForm', () => {
     }
   }
 
+  expect.extend({
+    toHaveBeenCalled(received) {
+      if (received.receivedArguments() === undefined) {
+        return {
+          pass: false,
+          message: () => 'Spy was not called.'
+        };
+      }
+      return { pass: true, message: () => 'Spy was called.' };
+    }
+  });
+
   const form = id => container.querySelector(`form[id="${id}"]`)
   const field = name => form('customer').elements[name]
   const labelFor = formElement =>
@@ -79,7 +91,7 @@ describe('CustomerForm', () => {
           onSubmit={submitSpy.fn}
         />)
       ReactTestUtils.Simulate.submit(form('customer'));
-      expect(submitSpy.receivedArguments()).toBeDefined();
+      expect(submitSpy).toHaveBeenCalled();
       expect(submitSpy.receivedArgument(0)[fieldName]).toEqual(value);
     });
 
