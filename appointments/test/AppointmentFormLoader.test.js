@@ -7,6 +7,7 @@ import {
   fetchResponseError,
   requestBodyOf
 } from './spyHelpers'
+import * as AppointmentFormExports from '../src/AppointmentForm';
 
 describe('AppointmentFormLoader', () => {
   let render, container;
@@ -19,10 +20,14 @@ describe('AppointmentFormLoader', () => {
     jest
       .spyOn(window, 'fetch')
       .mockReturnValue(fetchResponseOk(availableTimeSlots))
+    jest
+      .spyOn(AppointmentFormExports, 'AppointmentForm')
+      .mockReturnValue(null)
   });
 
   afterEach(() => {
     window.fetch.mockRestore()
+    AppointmentFormExports.AppointmentForm.mockRestore()
   });
 
   it('fetches data when the component is mounted', () => {
@@ -35,5 +40,12 @@ describe('AppointmentFormLoader', () => {
         headers: { 'Content-Type': 'application/json' }
       })
     );
+  });
+
+  it('initially passes no date to the AppointmentForm', () => {
+    render(<AppointmentFormLoader />);
+
+    expect(AppointmentFormExports.AppointmentForm)
+      .toHaveBeenCalledWith({ availableTimeSlots: [] }, expect.anything());
   });
 });
