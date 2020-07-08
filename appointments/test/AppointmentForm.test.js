@@ -364,5 +364,36 @@ describe('AppointmentForm', () => {
         startsAt: availableTimeSlots[1].startsAt
       });
     });
+
+    it('filters appointments by selected stylist', () => {
+      const availableTimeSlots = [
+        {
+          startsAt: today.setHours(9, 0, 0, 0),
+          stylists: ['A', 'B']
+        },
+        {
+          startsAt: today.setHours(9, 30, 0, 0),
+          stylists: ['A']
+        }
+      ];
+
+      render(
+        <AppointmentForm
+          availableTimeSlots={availableTimeSlots}
+          today={today}
+        />);
+
+      change(
+        field('appointment', 'stylist'),
+        withEvent('stylist', 'B'));
+
+      const cells = timeSlotTable().querySelectorAll('td');
+      expect(
+        cells[0].querySelector('input[type="radio"]')
+      ).not.toBeNull();
+      expect(
+        cells[7].querySelector('input[type="radio"]')
+      ).toBeNull();
+    });
   });
 });
