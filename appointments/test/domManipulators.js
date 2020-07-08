@@ -28,7 +28,9 @@ export const createContainer = () => {
   return {
     element,
     elements,
-    render: component => ReactDOM.render(component, container),
+    render: component => act(() => {
+      ReactDOM.render(component, container)
+    }),
     container,
     form,
     field,

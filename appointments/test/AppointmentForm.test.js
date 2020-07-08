@@ -137,10 +137,10 @@ describe('AppointmentForm', () => {
     await submit(form('appointment'));
 
     expect(window.fetch).toHaveBeenCalledWith('/appointments',
-      expect.objectContaining({
-        method: 'POST',
+      expect.objectcontaining({
+        method: 'post',
         credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'content-type': 'application/json' }
       }));
   });
 
