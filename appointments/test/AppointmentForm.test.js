@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactTestUtils from 'react-dom/test-utils';
 import 'whatwg-fetch'
 import { createContainer, withEvent } from './domManipulators';
 import { AppointmentForm, TimeSlotTable } from '../src/AppointmentForm';
