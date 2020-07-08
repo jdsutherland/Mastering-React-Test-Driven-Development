@@ -38,7 +38,7 @@ describe('AppointmentFormLoader', () => {
     );
   });
 
-  it('initially passes no date to the AppointmentForm', async () => {
+  it('initially passes no data to the AppointmentForm', async () => {
     await renderAndWait(<AppointmentFormLoader />);
 
     expect(AppointmentFormExports.AppointmentForm)
