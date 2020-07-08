@@ -1,12 +1,8 @@
 import React from 'react'
 import 'whatwg-fetch'
-import { createContainer, withEvent } from './domManipulators';
+import { createContainer } from './domManipulators';
 import { AppointmentFormLoader } from '../src/AppointmentFormLoader';
-import {
-  fetchResponseOk,
-  fetchResponseError,
-  requestBodyOf
-} from './spyHelpers'
+import { fetchResponseOk} from './spyHelpers'
 import * as AppointmentFormExports from '../src/AppointmentForm';
 
 describe('AppointmentFormLoader', () => {
