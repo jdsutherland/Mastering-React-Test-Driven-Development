@@ -202,6 +202,38 @@ describe('AppointmentForm', () => {
     itSubmitsNewValue('service', 'newValue')
   });
 
+  describe('stylist field', () => {
+    it('renders as a select box', () => {
+      render(<AppointmentForm />);
+      expect(form('appointment').elements.stylist).not.toBeNull();
+      expect(field('appointment', 'stylist').tagName).toEqual('SELECT')
+    });
+
+    it('initially has a blank value chosen', () => {
+      render(<AppointmentForm />);
+      const firstNode = field('appointment', 'stylist').childNodes[0]
+      expect(firstNode.value).toEqual('');
+      expect(firstNode.selected).toBeTruthy()
+    });
+
+    it('pre-selects the existing value', () => {
+      const selectableStylists = ['Ashley', 'Jo', 'Pat', 'Sam'];
+      render(
+        <AppointmentForm
+          selectableStylists={selectableStylists}
+          stylist="Ashley"
+        />
+      );
+      const option = findOption(field('appointment', 'stylist'), 'Ashley')
+      expect(option.selected).toBeTruthy();
+    });
+
+    itRendersALabel('stylist', 'Stylist')
+    itAssignsAnIdThatMatchesTheLabelId('stylist')
+    itSubmitsExistingValue('stylist', 'value')
+    itSubmitsNewValue('stylist', 'newValue')
+  });
+
   describe('time slot table', () => {
     const timeSlotTable = () => element('table#time-slots');
     const today = new Date();
