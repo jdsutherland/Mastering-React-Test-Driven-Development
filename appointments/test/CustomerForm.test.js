@@ -59,9 +59,7 @@ describe('CustomerForm', () => {
 
   it('has a submit button', () => {
     render(<CustomerForm />);
-    const submitButton = element(
-      'input[type="submit"]'
-    );
+    const submitButton = element('input[type="submit"]');
     expect(submitButton).not.toBeNull();
   });
 
@@ -154,10 +152,7 @@ describe('CustomerForm', () => {
   const itSubmitsExistingValue = (fieldName, value) =>
     it('saves existing value when submitted', async () => {
       expect.hasAssertions();
-      render(
-        <CustomerForm
-          { ...{[fieldName]: value} }
-        />)
+      render(<CustomerForm { ...{[fieldName]: value} } />)
       await submit(form('customer'));
 
       expect(requestBodyOf(window.fetch)).toMatchObject({
@@ -167,10 +162,7 @@ describe('CustomerForm', () => {
 
   const itSubmitsNewValue = (fieldName, value) =>
     it('saves new value when submitted', async () => {
-      render(
-        <CustomerForm
-          { ...{[fieldName]: value} }
-        />
+      render(<CustomerForm { ...{[fieldName]: value} } />
       )
       await change(
         field('customer', fieldName),
