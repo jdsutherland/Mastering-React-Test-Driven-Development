@@ -1,7 +1,13 @@
 import React from 'react'
 import ReactTestUtils from 'react-dom/test-utils';
+import 'whatwg-fetch'
 import { createContainer, withEvent } from './domManipulators';
 import { AppointmentForm, TimeSlotTable } from '../src/AppointmentForm';
+import {
+  fetchResponseOk,
+  fetchResponseError,
+  requestBodyOf
+} from './spyHelpers'
 
 describe('AppointmentForm', () => {
   let element, render, container, form,
@@ -19,6 +25,13 @@ describe('AppointmentForm', () => {
       submit,
       elements
     } = createContainer())
+    jest
+      .spyOn(window, 'fetch')
+      .mockReturnValue(fetchResponseOk({}))
+  });
+
+  afterEach(() => {
+    window.fetch.mockRestore();
   });
 
   const startsAtField = index =>
@@ -37,6 +50,19 @@ describe('AppointmentForm', () => {
   it('has a submit button', () => {
     render(<AppointmentForm />);
     expect(element('input[type="submit"]')).not.toBeNull();
+  });
+
+  it('calls fetch w/ the right props when submitting data', async () => {
+    render(<AppointmentForm />);
+
+    await submit(form('appointment'));
+
+    expect(window.fetch).toHaveBeenCalledWith('/appointments',
+      expect.objectContaining({
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' }
+      }));
   });
 
   const itRendersALabel = (fieldName, text) =>

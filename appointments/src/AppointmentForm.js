@@ -109,12 +109,15 @@ export const AppointmentForm = ({
   salonClosesAt,
   today,
   availableTimeSlots,
-  startsAt
+  startsAt,
+  onSave
 }) => {
   const [appointment, setAppointment] = useState({
     service,
     startsAt
   });
+  const [error, setError] = useState(false);
+
   const handleSelectBoxChange = ({ target: { value, name } }) =>
     setAppointment(appointment => ({
       ...appointment,
@@ -130,7 +133,23 @@ export const AppointmentForm = ({
     []
   );
 
-  return <form id="appointment" onSubmit={() => onSubmit(appointment)}>
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const result = await window.fetch('/appointments', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(appointment)
+    })
+    if (result.ok) {
+      setError(false)
+      onSave();
+    } else {
+      setError(true)
+    }
+  }
+
+  return <form id="appointment" onSubmit={handleSubmit}>
     <label htmlFor="service">Salon service</label>
     <select
       name="service"
@@ -165,5 +184,6 @@ AppointmentForm.defaultProps = {
     'Cut & color',
     'Beard trim',
     'Cut & beard trim',
-    'Extensions']
+    'Extensions'],
+  onSave: () => {}
 };
