@@ -3,10 +3,11 @@ import { AppointmentsDayView } from '../src/AppointmentsDayView';
 
 export const AppointmentsDayViewLoader = ({ today }) => {
   const [appointments, setAppointments] = useState([]);
-  const from = today.setHours(0, 0, 0, 0)
-  const to = today.setHours(23, 59, 59, 999)
 
   useEffect(() => {
+    const from = today.setHours(0, 0, 0, 0)
+    const to = today.setHours(23, 59, 59, 999)
+
     const fetchAppointments = async () => {
       const result = await window.fetch(`/appointments/${from}-${to}`, {
         method: 'GET',
@@ -17,7 +18,7 @@ export const AppointmentsDayViewLoader = ({ today }) => {
     }
 
     fetchAppointments()
-  }, [from, to]);
+  }, [today]);
 
   return (
     <AppointmentsDayView appointments={appointments} />

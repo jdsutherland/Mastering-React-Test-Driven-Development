@@ -60,4 +60,17 @@ describe('AppointmentsDayViewLoader', () => {
       .toHaveBeenLastCalledWith({appointments}, expect.anything());
   });
 
+  it('re-requests appointment when today prop changes', async () => {
+    const tomorrow = new Date(today);
+    tomorrow.setHours(24);
+    const from = tomorrow.setHours(0, 0, 0, 0)
+    const to = tomorrow.setHours(23, 59, 59, 999)
+
+    await renderAndWait(<AppointmentsDayViewLoader today={today} />);
+    await renderAndWait(<AppointmentsDayViewLoader today={tomorrow} />);
+
+    expect(window.fetch).toHaveBeenLastCalledWith(
+      `/appointments/${from}-${to}`,
+      expect.anything());
+  });
 });
