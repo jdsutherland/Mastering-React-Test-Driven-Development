@@ -112,6 +112,18 @@ describe('CustomerForm', () => {
     expect(element('.error').textContent).toMatch('error occurred')
   });
 
+  it('clears error message when fetch succeeds', async () => {
+    window.fetch.mockReturnValue(fetchResponseError());
+    render(<CustomerForm />);
+    await submit(form('customer'));
+
+    window.fetch.mockReturnValue(fetchResponseOk());
+    render(<CustomerForm />);
+    await submit(form('customer'));
+
+    expect(element('.error')).toBeNull()
+  });
+
   const itRendersAsATextBox = (fieldName) =>
     it('renders as a text box', () => {
       render(<CustomerForm />)
