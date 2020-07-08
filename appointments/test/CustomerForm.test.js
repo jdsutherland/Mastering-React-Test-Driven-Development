@@ -160,18 +160,18 @@ describe('CustomerForm', () => {
       });
     });
 
-  const itSubmitsNewValue = (fieldName, value) =>
+  const itSubmitsNewValue = (fieldName) =>
     it('saves new value when submitted', async () => {
-      render(<CustomerForm { ...{[fieldName]: value} } />
+      render(<CustomerForm { ...{[fieldName]: 'aValue'} } />
       )
       await change(
         field('customer', fieldName),
-        withEvent(fieldName, value)
+        withEvent(fieldName, 'newValue')
       );
       await submit(form('customer'));
 
       expect(requestBodyOf(window.fetch)).toMatchObject({
-        [fieldName]: value
+        [fieldName]: 'newValue'
       });
     });
 
@@ -181,7 +181,7 @@ describe('CustomerForm', () => {
     itRendersALabel('firstName', 'First name')
     itAssignsAnIdThatMatchesTheLabelId('firstName')
     itSubmitsExistingValue('firstName', 'value')
-    itSubmitsNewValue('firstName', 'newValue')
+    itSubmitsNewValue('firstName')
   });
 
   describe('last name field', () => {
