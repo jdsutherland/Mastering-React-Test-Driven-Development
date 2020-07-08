@@ -1,6 +1,6 @@
 import React from 'react'
 import 'whatwg-fetch'
-import { createContainer } from './domManipulators'
+import { createContainer, withEvent } from './domManipulators'
 import {
   fetchResponseOk,
   fetchResponseError,
@@ -172,9 +172,10 @@ describe('CustomerForm', () => {
           { ...{[fieldName]: value} }
         />
       )
-      await change(field('customer', fieldName), {
-        target: { value }
-      });
+      await change(
+        field('customer', fieldName),
+        withEvent(fieldName, value)
+      );
       await submit(form('customer'));
 
       expect(requestBodyOf(window.fetch)).toMatchObject({

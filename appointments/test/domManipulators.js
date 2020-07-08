@@ -1,6 +1,9 @@
 import ReactDOM from 'react-dom';
 import ReactTestUtils, { act } from 'react-dom/test-utils';
 
+export const withEvent = (name, value) => ({
+  target: { name, value }
+});
 
 export const createContainer = () => {
   const container = document.createElement('div')
