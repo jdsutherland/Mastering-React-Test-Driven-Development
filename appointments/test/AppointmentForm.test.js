@@ -9,6 +9,7 @@ import {
 } from './spyHelpers'
 
 describe('AppointmentForm', () => {
+  const customer = { id: 123 };
   let element, render, container, form,
     field, labelFor, change, submit, elements, children
 
@@ -89,6 +90,7 @@ describe('AppointmentForm', () => {
     it('saves existing value when submitted', async () => {
       render(
         <AppointmentForm
+          customer={customer}
           {...props}
           {...{ [fieldName]: 'value' }}
         />
@@ -105,6 +107,7 @@ describe('AppointmentForm', () => {
     it('saves new value when submitted', async () => {
       render(
         <AppointmentForm
+          customer={customer}
           {...props}
           {...{ [fieldName]: 'existingValue' }}
         />
@@ -132,7 +135,7 @@ describe('AppointmentForm', () => {
   });
 
   it('calls fetch w/ the right props when submitting data', async () => {
-    render(<AppointmentForm />);
+    render(<AppointmentForm customer={customer}/>);
 
     await submit(form('appointment'));
 
@@ -147,7 +150,9 @@ describe('AppointmentForm', () => {
   it('notifies onSave when form is submitted', async () => {
     const saveSpy = jest.fn();
 
-    render(<AppointmentForm onSave={saveSpy}/>);
+    render(
+      <AppointmentForm onSave={saveSpy} customer={customer}/>
+    );
     await submit(form('appointment'));
 
     expect(saveSpy).toHaveBeenCalled();
@@ -157,7 +162,8 @@ describe('AppointmentForm', () => {
     window.fetch.mockReturnValue(fetchResponseError());
     const saveSpy = jest.fn();
 
-    render(<AppointmentForm onSave={saveSpy}/>);
+    render(
+      <AppointmentForm onSave={saveSpy} customer={customer}/>);
     await submit(form('appointment'));
 
     expect(saveSpy).not.toHaveBeenCalled()
@@ -166,7 +172,7 @@ describe('AppointmentForm', () => {
   it('prevents the default action when submitting the form', async () => {
     const preventDefaultSpy = jest.fn();
 
-    render(<AppointmentForm />);
+    render(<AppointmentForm customer={customer}/>);
     await submit(form('appointment'), {
       preventDefault: preventDefaultSpy
     });
@@ -177,7 +183,7 @@ describe('AppointmentForm', () => {
   it('renders an error message when fetch call fails', async () => {
     window.fetch.mockReturnValue(fetchResponseError());
 
-    render(<AppointmentForm />);
+    render(<AppointmentForm customer={customer} />);
     await submit(form('appointment'));
 
     expect(element('.error')).not.toBeNull()
@@ -186,14 +192,22 @@ describe('AppointmentForm', () => {
 
   it('clears error message when fetch succeeds', async () => {
     window.fetch.mockReturnValue(fetchResponseError());
-    render(<AppointmentForm />);
+    render(<AppointmentForm customer={customer}/>);
     await submit(form('appointment'));
 
     window.fetch.mockReturnValue(fetchResponseOk());
-    render(<AppointmentForm />);
+    render(<AppointmentForm customer={customer}/>);
     await submit(form('appointment'));
 
     expect(element('.error')).toBeNull()
+  });
+
+  it('passes the customer id to fetch when submitting', async () => {
+    render(<AppointmentForm customer={customer} />);
+    await submit(form('appointment'));
+    expect(requestBodyOf(window.fetch)).toMatchObject({
+      customer: customer.id
+    })
   });
 
   describe('service field', () => {
@@ -336,6 +350,7 @@ describe('AppointmentForm', () => {
     it('saves existing value when submitted', async () => {
       render(
         <AppointmentForm
+          customer={customer}
           availableTimeSlots={availableTimeSlots}
           today={today}
           startsAt={availableTimeSlots[0].startsAt}
@@ -350,6 +365,7 @@ describe('AppointmentForm', () => {
     it('saves new value when submitted', async () => {
       render(
         <AppointmentForm
+          customer={customer}
           availableTimeSlots={availableTimeSlots}
           today={today}
           startsAt={availableTimeSlots[0].startsAt}
