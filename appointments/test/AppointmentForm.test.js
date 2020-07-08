@@ -1,21 +1,24 @@
 import React from 'react'
 import ReactTestUtils from 'react-dom/test-utils';
-import { createContainer } from './domManipulators';
+import { createContainer, withEvent } from './domManipulators';
 import { AppointmentForm, TimeSlotTable } from '../src/AppointmentForm';
 
 describe('AppointmentForm', () => {
-  let render, container, form, field, labelFor, element, elements;
+  let element, render, container, form,
+    field, labelFor, change, submit, elements
 
   beforeEach(() => {
     ({
+      element,
+      render,
+      container,
       form,
       field,
       labelFor,
-      render,
-      container,
-      element,
+      change,
+      submit,
       elements
-    } = createContainer());
+    } = createContainer())
   });
 
   const startsAtField = index =>
@@ -46,7 +49,6 @@ describe('AppointmentForm', () => {
 
   const itSubmitsExistingValue = (fieldName, value) =>
     it('saves existing value when submitted', async () => {
-      expect.hasAssertions();
       render(
         <AppointmentForm
           { ...{[fieldName]: value} }
@@ -55,12 +57,11 @@ describe('AppointmentForm', () => {
           }
         />
       )
-      await ReactTestUtils.Simulate.submit(form('appointment'));
+      await submit(form('appointment'));
     });
 
   const itSubmitsNewValue = (fieldName, value) =>
     it('saves new value when submitted', async () => {
-      expect.hasAssertions();
       render(
         <AppointmentForm
           { ...{[fieldName]: value} }
@@ -69,10 +70,11 @@ describe('AppointmentForm', () => {
           }
         />
       )
-      await ReactTestUtils.Simulate.change(field('appointment', fieldName), {
-        target: { value }
-      });
-      await ReactTestUtils.Simulate.submit(form('appointment'));
+      await change(
+        field('appointment', fieldName),
+        withEvent(fieldName, value)
+      );
+      await submit(form('appointment'));
     });
 
   describe('service field', () => {
@@ -117,9 +119,8 @@ describe('AppointmentForm', () => {
     itSubmitsNewValue('service', 'newValue')
   });
 
-  const timeSlotTable = () => element('table#time-slots');
-
   describe('time slot table', () => {
+    const timeSlotTable = () => element('table#time-slots');
     const today = new Date();
     const availableTimeSlots = [
       { startsAt: today.setHours(9, 0, 0, 0) },
@@ -201,7 +202,6 @@ describe('AppointmentForm', () => {
     });
 
     it('saves existing value when submitted', async () => {
-      expect.hasAssertions();
       render(
         <AppointmentForm
           availableTimeSlots={availableTimeSlots}
@@ -214,11 +214,10 @@ describe('AppointmentForm', () => {
           }
         />
       );
-      ReactTestUtils.Simulate.submit(form('appointment'));
+      await submit(form('appointment'));
     });
 
-    it('saves new value when submitted', () => {
-      expect.hasAssertions();
+    it('saves new value when submitted', async () => {
       render(
         <AppointmentForm
           availableTimeSlots={availableTimeSlots}
@@ -228,13 +227,11 @@ describe('AppointmentForm', () => {
               expect(startsAt).toEqual(availableTimeSlots[1].startsAt)}
         />
       );
-      ReactTestUtils.Simulate.change(startsAtField(1), {
-        target: {
-          value: availableTimeSlots[1].startsAt.toString(),
-          name: 'startsAt'
-        }
-      });
-      ReactTestUtils.Simulate.submit(form('appointment'));
+      await change(
+        startsAtField(1),
+        withEvent('startsAt', availableTimeSlots[1].startsAt.toString())
+      )
+      await submit(form('appointment'));
     });
   });
 });
