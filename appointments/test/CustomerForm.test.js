@@ -9,14 +9,8 @@ import {
 import { CustomerForm } from '../src/CustomerForm'
 
 describe('CustomerForm', () => {
-  let render,
-    container,
-    form,
-    field,
-    labelFor,
-    element,
-    change,
-    submit;
+  let element, render, container, form,
+    field, labelFor, change, submit
 
   beforeEach(() => {
     ({
