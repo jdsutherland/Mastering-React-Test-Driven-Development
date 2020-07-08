@@ -65,6 +65,58 @@ describe('AppointmentForm', () => {
       }));
   });
 
+  it('notifies onSave when form is submitted', async () => {
+    const saveSpy = jest.fn();
+
+    render(<AppointmentForm onSave={saveSpy}/>);
+    await submit(form('appointment'));
+
+    expect(saveSpy).toHaveBeenCalled();
+  });
+
+  it('does not notify onSave if the POST request returns an error', async () => {
+    window.fetch.mockReturnValue(fetchResponseError());
+    const saveSpy = jest.fn();
+
+    render(<AppointmentForm onSave={saveSpy}/>);
+    await submit(form('appointment'));
+
+    expect(saveSpy).not.toHaveBeenCalled()
+  });
+
+  it('prevents the default action when submitting the form', async () => {
+    const preventDefaultSpy = jest.fn();
+
+    render(<AppointmentForm />);
+    await submit(form('appointment'), {
+      preventDefault: preventDefaultSpy
+    });
+
+    expect(preventDefaultSpy).toHaveBeenCalled()
+  });
+
+  it('renders an error message when fetch call fails', async () => {
+    window.fetch.mockReturnValue(fetchResponseError());
+
+    render(<AppointmentForm />);
+    await submit(form('appointment'));
+
+    expect(element('.error')).not.toBeNull()
+    expect(element('.error').textContent).toMatch('error occurred')
+  });
+
+  it('clears error message when fetch succeeds', async () => {
+    window.fetch.mockReturnValue(fetchResponseError());
+    render(<AppointmentForm />);
+    await submit(form('appointment'));
+
+    window.fetch.mockReturnValue(fetchResponseOk());
+    render(<AppointmentForm />);
+    await submit(form('appointment'));
+
+    expect(element('.error')).toBeNull()
+  });
+
   const itRendersALabel = (fieldName, text) =>
     it('renders a label', () => {
       render(<AppointmentForm />)

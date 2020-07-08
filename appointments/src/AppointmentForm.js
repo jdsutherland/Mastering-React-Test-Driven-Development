@@ -150,6 +150,7 @@ export const AppointmentForm = ({
   }
 
   return <form id="appointment" onSubmit={handleSubmit}>
+    { error ? <Error /> : null }
     <label htmlFor="service">Salon service</label>
     <select
       name="service"
@@ -187,3 +188,6 @@ AppointmentForm.defaultProps = {
     'Extensions'],
   onSave: () => {}
 };
+
+const Error = () =>
+  <div className="error">An error occurred during the save.</div>
