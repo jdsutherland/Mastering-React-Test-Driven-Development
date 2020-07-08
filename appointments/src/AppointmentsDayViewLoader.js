@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { AppointmentsDayView } from '../src/AppointmentsDayView';
 
 export const AppointmentsDayViewLoader = ({ today }) => {
   const from = today.setHours(0, 0, 0, 0)
@@ -17,6 +18,10 @@ export const AppointmentsDayViewLoader = ({ today }) => {
   }, [from, to]);
 
   return (
-    null
+    <AppointmentsDayView appointments={[]} />
   )
+}
+
+AppointmentsDayViewLoader.defaultProps = {
+  today: new Date()
 }
