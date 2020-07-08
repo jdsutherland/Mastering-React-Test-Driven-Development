@@ -51,4 +51,13 @@ describe('AppointmentFormLoader', () => {
     expect(AppointmentFormExports.AppointmentForm)
       .toHaveBeenLastCalledWith({availableTimeSlots}, expect.anything());
   });
+
+  it('passes props through to children', async() => {
+    await renderAndWait(<AppointmentFormLoader testProp={123}/>);
+
+    expect(AppointmentFormExports.AppointmentForm).toHaveBeenCalledWith(
+        expect.objectContaining({ testProp: 123 }),
+        expect.anything()
+      );
+  });
 });
