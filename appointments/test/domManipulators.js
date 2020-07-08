@@ -23,6 +23,8 @@ export const createContainer = () => {
     await act(async () =>
       ReactTestUtils.Simulate[eventName](element, eventData));
 
+  const children = element => Array.from(element.childNodes);
+
   return {
     element,
     elements,
@@ -34,5 +36,6 @@ export const createContainer = () => {
     click: simulateEvent('click'),
     change: simulateEvent('change'),
     submit: simulateEventAndWait('submit'),
+    children
   }
 }

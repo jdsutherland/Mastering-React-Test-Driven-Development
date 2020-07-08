@@ -105,6 +105,7 @@ export const AppointmentForm = ({
   selectableServices,
   service,
   selectableStylists,
+  serviceStylists,
   stylist,
   onSubmit,
   salonOpensAt,
@@ -152,6 +153,10 @@ export const AppointmentForm = ({
     }
   }
 
+  const stylistsForService = appointment.service
+    ? serviceStylists[appointment.service]
+    : selectableStylists
+
   return <form id="appointment" onSubmit={handleSubmit}>
     { error ? <Error /> : null }
 
@@ -174,7 +179,7 @@ export const AppointmentForm = ({
       value={stylist}
       onChange={handleSelectBoxChange}>
       <option />
-      {selectableStylists.map(s =>
+      {stylistsForService.map(s =>
         <option key={s}>{s}</option>
       )}
     </select>
