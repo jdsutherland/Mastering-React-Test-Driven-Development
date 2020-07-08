@@ -53,4 +53,11 @@ describe('AppointmentsDayViewLoader', () => {
       .toHaveBeenCalledWith({ appointments: [] }, expect.anything());
   });
 
+  it('displays appointments that are fetched on mount', async () => {
+    await renderAndWait(<AppointmentsDayViewLoader />);
+
+    expect(AppointmentsDayViewExports.AppointmentsDayView)
+      .toHaveBeenLastCalledWith({appointments}, expect.anything());
+  });
+
 });

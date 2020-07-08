@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { AppointmentsDayView } from '../src/AppointmentsDayView';
 
 export const AppointmentsDayViewLoader = ({ today }) => {
+  const [appointments, setAppointments] = useState([]);
   const from = today.setHours(0, 0, 0, 0)
   const to = today.setHours(23, 59, 59, 999)
 
@@ -12,13 +13,14 @@ export const AppointmentsDayViewLoader = ({ today }) => {
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' }
       })
+      setAppointments(await result.json())
     }
 
     fetchAppointments()
   }, [from, to]);
 
   return (
-    <AppointmentsDayView appointments={[]} />
+    <AppointmentsDayView appointments={appointments} />
   )
 }
 
