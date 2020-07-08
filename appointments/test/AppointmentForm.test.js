@@ -34,6 +34,11 @@ describe('AppointmentForm', () => {
     expect(form('appointment')).not.toBeNull();
   });
 
+  it('has a submit button', () => {
+    render(<AppointmentForm />);
+    expect(element('input[type="submit"]')).not.toBeNull();
+  });
+
   const itRendersALabel = (fieldName, text) =>
     it('renders a label', () => {
       render(<AppointmentForm />)
