@@ -125,6 +125,19 @@ describe('AppointmentForm', () => {
       expect(labelFor(fieldName).textContent).toEqual(text)
     });
 
+  const itPreselectsExistingValues = (fieldName, existingValue, props) => {
+    it('pre-selects the existing value', () => {
+      render(
+        <AppointmentForm
+          {...props}
+          {...{ [fieldName]: existingValue } }
+        />
+      );
+      const option = findOption(field('appointment', fieldName), existingValue)
+      expect(option.selected).toBeTruthy();
+    });
+  }
+
   const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
     it('assigns an id that matches the label id', () => {
       render(<AppointmentForm />)
@@ -191,18 +204,8 @@ describe('AppointmentForm', () => {
       )
     })
 
-    it('pre-selects the existing value', () => {
-      const services = ['Cut', 'Blow-dry'];
-      render(
-        <AppointmentForm
-          selectableServices={services}
-          service="Blow-dry"
-        />
-      );
-      const option = findOption(field('appointment', 'service'), 'Blow-dry')
-      expect(option.selected).toBeTruthy();
-    });
-
+    itPreselectsExistingValues('service', 'Blow-dry',
+      { selectableServices: ['Cut', 'Blow-dry'] })
     itRendersALabel('service', 'Salon service')
     itAssignsAnIdThatMatchesTheLabelId('service')
     itSubmitsExistingValue('service', {
@@ -227,18 +230,8 @@ describe('AppointmentForm', () => {
       expect(firstNode.selected).toBeTruthy()
     });
 
-    it('pre-selects the existing value', () => {
-      const selectableStylists = ['Ashley', 'Jo', 'Pat', 'Sam'];
-      render(
-        <AppointmentForm
-          selectableStylists={selectableStylists}
-          stylist="Ashley"
-        />
-      );
-      const option = findOption(field('appointment', 'stylist'), 'Ashley')
-      expect(option.selected).toBeTruthy();
-    });
-
+    itPreselectsExistingValues('stylist', 'Ashley',
+      { selectableStylists: ['Ashley', 'Jo', 'Pat', 'Sam'] })
     itRendersALabel('stylist', 'Stylist')
     itAssignsAnIdThatMatchesTheLabelId('stylist')
     itSubmitsExistingValue('stylist');
