@@ -43,6 +43,85 @@ describe('AppointmentForm', () => {
     return options.find(o => o.textContent === textContent)
   }
 
+  const itRendersALabel = (fieldName, text) =>
+    it('renders a label', () => {
+      render(<AppointmentForm />)
+      expect(labelFor(fieldName)).not.toBeNull()
+      expect(labelFor(fieldName).textContent).toEqual(text)
+    });
+
+  const itRendersAsASelectBox = name => {
+    it('renders as a select box', () => {
+      render(<AppointmentForm />);
+      expect(form('appointment').elements[name]).not.toBeNull();
+      expect(field('appointment', name).tagName).toEqual('SELECT')
+    });
+  }
+
+  const itInitiallyHasABlankValueChosen = name => {
+    it('initially has a blank value chosen', () => {
+      render(<AppointmentForm />);
+      const firstNode = field('appointment', name).childNodes[0]
+      expect(firstNode.value).toEqual('');
+      expect(firstNode.selected).toBeTruthy()
+    });
+  }
+
+  const itPreselectsExistingValues = (fieldName, existingValue, props) => {
+    it('pre-selects the existing value', () => {
+      render(
+        <AppointmentForm
+          {...props}
+          {...{ [fieldName]: existingValue } }
+        />
+      );
+      const option = findOption(field('appointment', fieldName), existingValue)
+      expect(option.selected).toBeTruthy();
+    });
+  }
+
+  const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
+    it('assigns an id that matches the label id', () => {
+      render(<AppointmentForm />)
+      expect(field('appointment', fieldName).id).toEqual(fieldName)
+    });
+
+  const itSubmitsExistingValue = (fieldName, props) => {
+    it('saves existing value when submitted', async () => {
+      render(
+        <AppointmentForm
+          {...props}
+          {...{ [fieldName]: 'value' }}
+        />
+      );
+      await submit(form('appointment'));
+
+      expect(requestBodyOf(window.fetch)).toMatchObject({
+        [fieldName]: 'value'
+      });
+    });
+  };
+
+  const itSubmitsNewValue = (fieldName, props) => {
+    it('saves new value when submitted', async () => {
+      render(
+        <AppointmentForm
+          {...props}
+          {...{ [fieldName]: 'existingValue' }}
+        />
+      );
+      change(
+        field('appointment', fieldName),
+        withEvent(fieldName, 'newValue')
+      );
+      await submit(form('appointment'));
+
+      expect(requestBodyOf(window.fetch)).toMatchObject({
+        [fieldName]: 'newValue'
+      });
+    });
+  };
+
   it('renders a form', () => {
     render(<AppointmentForm />);
     expect(form('appointment')).not.toBeNull();
@@ -118,80 +197,18 @@ describe('AppointmentForm', () => {
     expect(element('.error')).toBeNull()
   });
 
-  const itRendersALabel = (fieldName, text) =>
-    it('renders a label', () => {
-      render(<AppointmentForm />)
-      expect(labelFor(fieldName)).not.toBeNull()
-      expect(labelFor(fieldName).textContent).toEqual(text)
-    });
-
-  const itPreselectsExistingValues = (fieldName, existingValue, props) => {
-    it('pre-selects the existing value', () => {
-      render(
-        <AppointmentForm
-          {...props}
-          {...{ [fieldName]: existingValue } }
-        />
-      );
-      const option = findOption(field('appointment', fieldName), existingValue)
-      expect(option.selected).toBeTruthy();
-    });
-  }
-
-  const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
-    it('assigns an id that matches the label id', () => {
-      render(<AppointmentForm />)
-      expect(field('appointment', fieldName).id).toEqual(fieldName)
-    });
-
-  const itSubmitsExistingValue = (fieldName, props) => {
-    it('saves existing value when submitted', async () => {
-      render(
-        <AppointmentForm
-          {...props}
-          {...{ [fieldName]: 'value' }}
-        />
-      );
-      await submit(form('appointment'));
-
-      expect(requestBodyOf(window.fetch)).toMatchObject({
-        [fieldName]: 'value'
-      });
-    });
-  };
-
-  const itSubmitsNewValue = (fieldName, props) => {
-    it('saves new value when submitted', async () => {
-      render(
-        <AppointmentForm
-          {...props}
-          {...{ [fieldName]: 'existingValue' }}
-        />
-      );
-      change(
-        field('appointment', fieldName),
-        withEvent(fieldName, 'newValue')
-      );
-      await submit(form('appointment'));
-
-      expect(requestBodyOf(window.fetch)).toMatchObject({
-        [fieldName]: 'newValue'
-      });
-    });
-  };
-
   describe('service field', () => {
-    it('renders as a select box', () => {
-      render(<AppointmentForm />);
-      expect(form('appointment').elements.service).not.toBeNull();
-      expect(field('appointment', 'service').tagName).toEqual('SELECT')
+    itRendersAsASelectBox('service')
+    itInitiallyHasABlankValueChosen('service')
+    itPreselectsExistingValues('service', 'Blow-dry',
+      { selectableServices: ['Cut', 'Blow-dry'] })
+    itRendersALabel('service', 'Salon service')
+    itAssignsAnIdThatMatchesTheLabelId('service')
+    itSubmitsExistingValue('service', {
+      serviceStylists: { value: [] }
     });
-
-    it('initially has a blank value chosen', () => {
-      render(<AppointmentForm />);
-      const firstNode = field('appointment', 'service').childNodes[0]
-      expect(firstNode.value).toEqual('');
-      expect(firstNode.selected).toBeTruthy()
+    itSubmitsNewValue('service', {
+      serviceStylists: { newValue: [], existingValue: [] }
     });
 
     it('lists all salon services', () => {
@@ -203,33 +220,11 @@ describe('AppointmentForm', () => {
         expect.arrayContaining(selectableServices)
       )
     })
-
-    itPreselectsExistingValues('service', 'Blow-dry',
-      { selectableServices: ['Cut', 'Blow-dry'] })
-    itRendersALabel('service', 'Salon service')
-    itAssignsAnIdThatMatchesTheLabelId('service')
-    itSubmitsExistingValue('service', {
-      serviceStylists: { value: [] }
-    });
-    itSubmitsNewValue('service', {
-      serviceStylists: { newValue: [], existingValue: [] }
-    });
   });
 
   describe('stylist field', () => {
-    it('renders as a select box', () => {
-      render(<AppointmentForm />);
-      expect(form('appointment').elements.stylist).not.toBeNull();
-      expect(field('appointment', 'stylist').tagName).toEqual('SELECT')
-    });
-
-    it('initially has a blank value chosen', () => {
-      render(<AppointmentForm />);
-      const firstNode = field('appointment', 'stylist').childNodes[0]
-      expect(firstNode.value).toEqual('');
-      expect(firstNode.selected).toBeTruthy()
-    });
-
+    itRendersAsASelectBox('stylist')
+    itInitiallyHasABlankValueChosen('stylist')
     itPreselectsExistingValues('stylist', 'Ashley',
       { selectableStylists: ['Ashley', 'Jo', 'Pat', 'Sam'] })
     itRendersALabel('stylist', 'Stylist')
