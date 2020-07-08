@@ -300,8 +300,7 @@ describe('AppointmentForm', () => {
         <AppointmentForm
           availableTimeSlots={availableTimeSlots}
           today={today}
-        />
-      )
+        />)
       const cells = timeSlotTable().querySelectorAll('td')
       expect(cells[0].querySelector('input[type="radio"]')).not.toBeNull();
       expect(cells[7].querySelector('input[type="radio"]')).not.toBeNull();
@@ -318,8 +317,7 @@ describe('AppointmentForm', () => {
         <AppointmentForm
           availableTimeSlots={availableTimeSlots}
           today={today}
-        />
-      )
+        />)
       expect(startsAtField(0).value).toEqual(
         availableTimeSlots[0].startsAt.toString())
       expect(startsAtField(1).value).toEqual(
@@ -332,8 +330,7 @@ describe('AppointmentForm', () => {
           availableTimeSlots={availableTimeSlots}
           today={today}
           startsAt={availableTimeSlots[0].startsAt}
-        />
-      );
+        />);
       expect(startsAtField(0).checked).toEqual(true)
     });
 
@@ -343,14 +340,12 @@ describe('AppointmentForm', () => {
           availableTimeSlots={availableTimeSlots}
           today={today}
           startsAt={availableTimeSlots[0].startsAt}
-          onSubmit={({ startsAt }) =>
-              expect(startsAt).toEqual(
-                availableTimeSlots[0].startsAt
-              )
-          }
-        />
-      );
+        />);
       await submit(form('appointment'));
+
+      expect(requestBodyOf(window.fetch)).toMatchObject({
+        startsAt: availableTimeSlots[0].startsAt
+      });
     });
 
     it('saves new value when submitted', async () => {
@@ -359,16 +354,15 @@ describe('AppointmentForm', () => {
           availableTimeSlots={availableTimeSlots}
           today={today}
           startsAt={availableTimeSlots[0].startsAt}
-          onSubmit={({ startsAt }) =>
-              expect(startsAt).toEqual(availableTimeSlots[1].startsAt)}
-        />
-      );
+        />);
       await change(
         startsAtField(1),
-        withEvent('startsAt', availableTimeSlots[1].startsAt.toString())
-      )
+        withEvent('startsAt', availableTimeSlots[1].startsAt.toString()))
       await submit(form('appointment'));
+
+      expect(requestBodyOf(window.fetch)).toMatchObject({
+        startsAt: availableTimeSlots[1].startsAt
+      });
     });
   });
 });
-
