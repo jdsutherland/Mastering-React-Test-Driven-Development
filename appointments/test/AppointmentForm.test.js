@@ -131,35 +131,41 @@ describe('AppointmentForm', () => {
       expect(field('appointment', fieldName).id).toEqual(fieldName)
     });
 
-  const itSubmitsExistingValue = (fieldName, value) =>
+  const itSubmitsExistingValue = (fieldName, props) => {
     it('saves existing value when submitted', async () => {
       render(
         <AppointmentForm
-          { ...{[fieldName]: value} }
-          onSubmit={props =>
-              expect(props[fieldName]).toEqual(value)
-          }
+          {...props}
+          {...{ [fieldName]: 'value' }}
         />
-      )
+      );
       await submit(form('appointment'));
-    });
 
-  const itSubmitsNewValue = (fieldName, value) =>
+      expect(requestBodyOf(window.fetch)).toMatchObject({
+        [fieldName]: 'value'
+      });
+    });
+  };
+
+  const itSubmitsNewValue = (fieldName, props) => {
     it('saves new value when submitted', async () => {
       render(
         <AppointmentForm
-          { ...{[fieldName]: value} }
-          onSubmit={props =>
-              expect(props[fieldName]).toEqual(value)
-          }
+          {...props}
+          {...{ [fieldName]: 'existingValue' }}
         />
-      )
-      await change(
+      );
+      change(
         field('appointment', fieldName),
-        withEvent(fieldName, value)
+        withEvent(fieldName, 'newValue')
       );
       await submit(form('appointment'));
+
+      expect(requestBodyOf(window.fetch)).toMatchObject({
+        [fieldName]: 'newValue'
+      });
     });
+  };
 
   describe('service field', () => {
     it('renders as a select box', () => {
@@ -199,8 +205,12 @@ describe('AppointmentForm', () => {
 
     itRendersALabel('service', 'Salon service')
     itAssignsAnIdThatMatchesTheLabelId('service')
-    // itSubmitsExistingValue('service', 'value') // TODO fixme
-    // itSubmitsNewValue('service', 'newValue') // TODO fixme
+    itSubmitsExistingValue('service', {
+      serviceStylists: { value: [] }
+    });
+    itSubmitsNewValue('service', {
+      serviceStylists: { newValue: [], existingValue: [] }
+    });
   });
 
   describe('stylist field', () => {
@@ -231,8 +241,8 @@ describe('AppointmentForm', () => {
 
     itRendersALabel('stylist', 'Stylist')
     itAssignsAnIdThatMatchesTheLabelId('stylist')
-    itSubmitsExistingValue('stylist', 'value')
-    itSubmitsNewValue('stylist', 'newValue')
+    itSubmitsExistingValue('stylist');
+    itSubmitsNewValue('stylist')
 
     it('lists only stylists that can perform the selected service', () => {
       const selectableServices = ['1', '2'];
