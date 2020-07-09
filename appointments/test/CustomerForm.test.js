@@ -65,32 +65,71 @@ describe('CustomerForm', () => {
     expect(submitButton).not.toBeNull();
   });
 
-  it('does not submit form when there are validation errors', async () => {
-    render(<CustomerForm />);
+  describe('validation', () => {
+    const itInvalidatesFieldWithValue = (
+      fieldName,
+      value,
+      description
+    ) => {
+      it(`displays error after blur when ${fieldName} field is ${value}`, () => {
+        render(<CustomerForm {...validCustomer} />)
 
-    await submit(form('customer'));
-    expect(window.fetch).not.toHaveBeenCalled();
-  });
-
-  it('renders validation errors after submission fails', async () => {
-    render(<CustomerForm />);
-
-    await submit(form('customer'));
-
-    expect(window.fetch).not.toHaveBeenCalled();
-    expect(element('.error')).not.toBeNull();
-  });
-
-  it('renders field validation errors from server', async () => {
-    const errors = {
-      phoneNumber: 'Phone number already exists in the system'
+        blur(
+          field('customer', fieldName),
+          withEvent(fieldName, value))
+        expect(element('.error')).not.toBeNull();
+        expect(element('.error').textContent).toMatch( description);
+      });
     }
-    window.fetch.mockReturnValue(fetchResponseError(422, {errors}));
 
-    render(<CustomerForm {...validCustomer} />);
-    await submit(form('customer'));
+    itInvalidatesFieldWithValue(
+      'firstName',
+      ' ',
+      'First name is required')
+    itInvalidatesFieldWithValue(
+      'lastName',
+      ' ',
+      'Last name is required')
+    itInvalidatesFieldWithValue(
+      'phoneNumber',
+      ' ',
+      'Phone number is required')
 
-    expect(element('.error').textContent).toMatch(errors.phoneNumber)
+    it('accepts standard phone number characters when validating', () => {
+      render(<CustomerForm {...validCustomer} />);
+      blur(
+        element("[name='phoneNumber']"),
+        withEvent('phoneNumber', '0123456789+()- '));
+      expect(element('.error')).toBeNull();
+    });
+
+    it('does not submit form when there are validation errors', async () => {
+      render(<CustomerForm />);
+
+      await submit(form('customer'));
+      expect(window.fetch).not.toHaveBeenCalled();
+    });
+
+    it('renders validation errors after submission fails', async () => {
+      render(<CustomerForm />);
+
+      await submit(form('customer'));
+
+      expect(window.fetch).not.toHaveBeenCalled();
+      expect(element('.error')).not.toBeNull();
+    });
+
+    it('renders field validation errors from server', async () => {
+      const errors = {
+        phoneNumber: 'Phone number already exists in the system'
+      }
+      window.fetch.mockReturnValue(fetchResponseError(422, {errors}));
+
+      render(<CustomerForm {...validCustomer} />);
+      await submit(form('customer'));
+
+      expect(element('.error').textContent).toMatch(errors.phoneNumber)
+    });
   });
 
   it('calls fetch w/ the right props when submitting data', async () => {
@@ -258,22 +297,6 @@ describe('CustomerForm', () => {
       });
     });
 
-  const itInvalidatesFieldWithValue = (
-    fieldName,
-    value,
-    description
-  ) => {
-    it(`displays error after blur when ${fieldName} field is ${value}`, () => {
-      render(<CustomerForm {...validCustomer} />)
-
-      blur(
-        field('customer', fieldName),
-        withEvent(fieldName, value))
-      expect(element('.error')).not.toBeNull();
-      expect(element('.error').textContent).toMatch( description);
-    });
-  }
-
   describe('first name field', () => {
     itRendersAsATextBox('firstName')
     itIncludesTheExistingValue('firstName')
@@ -281,7 +304,6 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('firstName')
     itSubmitsExistingValue('firstName', 'value')
     itSubmitsNewValue('firstName')
-    itInvalidatesFieldWithValue('firstName', ' ', 'First name is required')
   });
 
   describe('last name field', () => {
@@ -291,7 +313,6 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('lastName')
     itSubmitsExistingValue('lastName', 'value')
     itSubmitsNewValue('lastName', 'newValue')
-    itInvalidatesFieldWithValue('lastName', ' ', 'Last name is required')
   });
 
   describe('phone number field', () => {
@@ -301,18 +322,5 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('phoneNumber')
     itSubmitsExistingValue('phoneNumber', '12345')
     itSubmitsNewValue('phoneNumber', '0123456789+()- ')
-    itInvalidatesFieldWithValue('phoneNumber', ' ', 'Phone number is required')
-    itInvalidatesFieldWithValue(
-      'phoneNumber',
-      'invalid',
-      'Only numbers, spaces, and these symbols allowed: ( ) + -')
-
-    it('accepts standard phone number characters when validating', () => {
-      render(<CustomerForm {...validCustomer} />);
-      blur(
-        element("[name='phoneNumber']"),
-        withEvent('phoneNumber', '0123456789+()- '));
-      expect(element('.error')).toBeNull();
-    });
   });
 });
