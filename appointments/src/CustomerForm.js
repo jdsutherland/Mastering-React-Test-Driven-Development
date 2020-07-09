@@ -28,8 +28,9 @@ export const CustomerForm = ({
       ...customer,
       [target.name]: target.value
     }))
-    const validationResult = validateMany(validators, customer);
-    setValidationErrors(validationResult)
+    if (hasError(validationErrors, target.name)) {
+      validateSingleField(target.name, target.value);
+    }
   }
 
   const handleSubmit = async (event) => {
@@ -75,10 +76,15 @@ export const CustomerForm = ({
     )
   }
 
-  const handleBlur = ({ target }) => {
-    const result = validateMany(validators, { [target.name]: target.value })
-    setValidationErrors({ ...validationErrors, ...result })
-  }
+  const validateSingleField = (fieldName, fieldValue) => {
+    const result = validateMany(validators, {
+      [fieldName]: fieldValue
+    });
+    setValidationErrors({ ...validationErrors, ...result });
+  };
+
+  const handleBlur = ({ target }) =>
+    validateSingleField(target.name, target.value);
 
   const renderError = (fieldName) => {
     if (hasError(validationErrors, fieldName)) {
