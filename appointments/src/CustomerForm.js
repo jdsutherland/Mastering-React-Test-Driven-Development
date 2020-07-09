@@ -40,11 +40,24 @@ export const CustomerForm = ({
   const required = description => value =>
     !value || value.trim() === '' ? description : undefined
 
+  const match = (re, description) => value =>
+    !value.match(re) || value.trim() === '' ? description : undefined
+
+  const list = (...validators) => value =>
+    validators.reduce((result, validator) =>
+      result || validator(value),
+      undefined)
+
   const handleBlur = ({ target }) => {
     const validators = {
       firstName: required('First name is required'),
       lastName: required('Last name is required'),
-      phoneNumber: required('Phone number is required')
+      phoneNumber: list(
+        required('Phone number is required'),
+        match(
+          /^[0-9+()\- ]*$/,
+          'Only numbers, spaces, and these symbols allowed: ( ) + -')
+      )
     }
     const result = validators[target.name](target.value)
     setValidationErrors({
