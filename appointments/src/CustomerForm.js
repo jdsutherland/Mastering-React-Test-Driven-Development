@@ -37,26 +37,28 @@ export const CustomerForm = ({
     }
   }
 
-  const required = value =>
-    !value || value.trim() === ''
-      ? 'First name is required'
-      : undefined
+  const required = description => value =>
+    !value || value.trim() === '' ? description : undefined
 
   const handleBlur = ({ target }) => {
-    const result = required(target.value)
+    const validators = {
+      firstName: required('First name is required')
+    }
+    const result = validators[target.name](target.value)
     setValidationErrors({
       ...validationErrors,
-      firstName: result
+      [target.name]: result
     })
   }
 
-  const hasFirstNameError = () => validationErrors.firstName !== undefined
+  const hasError = fieldName =>
+    validationErrors[fieldName] !== undefined
 
-  const renderFirstNameError = () => {
-    if (hasFirstNameError()) {
+  const renderError = (fieldName) => {
+    if (hasError(fieldName)) {
       return (
         <span className="error">
-          {validationErrors.firstName}
+          {validationErrors[fieldName]}
         </span>
       )
     }
@@ -73,7 +75,7 @@ export const CustomerForm = ({
       onChange={handleChange}
       onBlur={handleBlur}
     />
-    {renderFirstNameError()}
+    {renderError('firstName')}
 
     <label htmlFor="lastName">Last name</label>
     <input
