@@ -21,6 +21,7 @@ export const CustomerForm = ({
   });
   const [error, setError] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = ({ target }) =>
     setCustomer(customer => ({
@@ -36,6 +37,7 @@ export const CustomerForm = ({
       return
     }
 
+    setSubmitting(true)
     const result = await window.fetch('/customers', {
       method: 'POST',
       credentials: 'same-origin',
@@ -52,6 +54,7 @@ export const CustomerForm = ({
     } else {
       setError(true)
     }
+    setSubmitting(false)
   }
 
   const validators = {
@@ -116,6 +119,7 @@ export const CustomerForm = ({
     {renderError('phoneNumber')}
 
     <input type="submit" value="Add" />
+    { submitting ? <span className="submittingIndicator" /> : null }
   </form>
 }
 
