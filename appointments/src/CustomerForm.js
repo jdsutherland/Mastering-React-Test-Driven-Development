@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { required, match, list } from './formValidation'
 
 export const CustomerForm = ({
   firstName,
@@ -54,17 +55,6 @@ export const CustomerForm = ({
       }),
       {}
     )
-
-  const required = description => value =>
-    !value || value.trim() === '' ? description : undefined
-
-  const match = (re, description) => value =>
-    !value.match(re) || value.trim() === '' ? description : undefined
-
-  const list = (...validators) => value =>
-    validators.reduce((result, validator) =>
-      result || validator(value),
-      undefined)
 
   const validators = {
     firstName: required('First name is required'),
