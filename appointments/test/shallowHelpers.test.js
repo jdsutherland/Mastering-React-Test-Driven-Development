@@ -1,12 +1,11 @@
 import React from 'react';
 import {
   createShallowRenderer,
-  childrenOf
+  childrenOf,
+  type
 } from './shallowHelpers';
 
-const TestComponent = ({ children }) => (
-  <React.Fragment>{children}</React.Fragment>
-);
+const TestComponent = ({ children }) => <React.Fragment>{children}</React.Fragment>;
 
 describe('child', () => {
   let render, child;
@@ -62,8 +61,6 @@ describe('childrenOf', () => {
     ).toEqual([<p>A</p>]);
   });
 });
-
-const type = typeName => element => element.type === typeName;
 
 describe('elementsMatching', () => {
   let render, elementsMatching;
