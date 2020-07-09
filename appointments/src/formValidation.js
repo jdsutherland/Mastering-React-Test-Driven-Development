@@ -8,3 +8,18 @@ export const list = (...validators) => value =>
   validators.reduce((result, validator) =>
     result || validator(value),
     undefined)
+
+export const hasError = (validationErrors, fieldName) =>
+  validationErrors[fieldName] !== undefined
+
+export const anyErrors = errors =>
+  Object.values(errors).some(err => err !== undefined)
+
+export const validateMany = (validators, fields) =>
+  Object.entries(fields).reduce(
+    (result, [name, value]) => ({
+      ...result,
+      [name]: validators[name](value)
+    }),
+    {}
+  )

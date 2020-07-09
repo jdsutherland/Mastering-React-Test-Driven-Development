@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { required, match, list } from './formValidation'
+import {
+  required,
+  match,
+  list,
+  hasError,
+  anyErrors,
+  validateMany
+} from './formValidation'
 
 export const CustomerForm = ({
   firstName,
@@ -23,7 +30,7 @@ export const CustomerForm = ({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const validationResult = validateMany(customer);
+    const validationResult = validateMany(validators, customer);
     if (anyErrors(validationResult)) {
       setValidationErrors(validationResult)
       return
@@ -44,18 +51,6 @@ export const CustomerForm = ({
     }
   }
 
-  const anyErrors = errors =>
-    Object.values(errors).some(err => err !== undefined)
-
-  const validateMany = fields =>
-    Object.entries(fields).reduce(
-      (result, [name, value]) => ({
-        ...result,
-        [name]: validators[name](value)
-      }),
-      {}
-    )
-
   const validators = {
     firstName: required('First name is required'),
     lastName: required('Last name is required'),
@@ -68,18 +63,12 @@ export const CustomerForm = ({
   }
 
   const handleBlur = ({ target }) => {
-    const result = validators[target.name](target.value)
-    setValidationErrors({
-      ...validationErrors,
-      [target.name]: result
-    })
+    const result = validateMany(validators, { [target.name]: target.value })
+    setValidationErrors({ ...validationErrors, ...result })
   }
 
-  const hasError = fieldName =>
-    validationErrors[fieldName] !== undefined
-
   const renderError = (fieldName) => {
-    if (hasError(fieldName)) {
+    if (hasError(validationErrors, fieldName)) {
       return (
         <span className="error">
           {validationErrors[fieldName]}
