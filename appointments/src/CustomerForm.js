@@ -12,6 +12,7 @@ export const CustomerForm = ({
     phoneNumber
   });
   const [error, setError] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const handleChange = ({ target }) =>
     setCustomer(customer => ({
@@ -36,6 +37,31 @@ export const CustomerForm = ({
     }
   }
 
+  const required = value =>
+    !value || value.trim() === ''
+      ? 'First name is required'
+      : undefined
+
+  const handleBlur = ({ target }) => {
+    const result = required(target.value)
+    setValidationErrors({
+      ...validationErrors,
+      firstName: result
+    })
+  }
+
+  const hasFirstNameError = () => validationErrors.firstName !== undefined
+
+  const renderFirstNameError = () => {
+    if (hasFirstNameError()) {
+      return (
+        <span className="error">
+          {validationErrors.firstName}
+        </span>
+      )
+    }
+  }
+
   return <form id="customer" onSubmit={handleSubmit}>
     { error ? <Error /> : null }
     <label htmlFor="firstName">First name</label>
@@ -45,7 +71,9 @@ export const CustomerForm = ({
       id="firstName"
       value={firstName}
       onChange={handleChange}
+      onBlur={handleBlur}
     />
+    {renderFirstNameError()}
 
     <label htmlFor="lastName">Last name</label>
     <input

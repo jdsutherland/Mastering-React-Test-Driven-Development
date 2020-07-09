@@ -10,7 +10,7 @@ import { CustomerForm } from '../src/CustomerForm'
 
 describe('CustomerForm', () => {
   let element, render, container, form,
-    field, labelFor, change, submit
+    field, labelFor, change, submit, blur
 
   beforeEach(() => {
     ({
@@ -21,7 +21,8 @@ describe('CustomerForm', () => {
       field,
       labelFor,
       change,
-      submit
+      submit,
+      blur
     } = createContainer())
     jest
       .spyOn(window, 'fetch')
@@ -187,6 +188,17 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('firstName')
     itSubmitsExistingValue('firstName', 'value')
     itSubmitsNewValue('firstName')
+
+    it('displays an error after blur when the first name field is blank', () => {
+      render(<CustomerForm />)
+
+      blur(
+        field('customer', 'firstName'),
+        withEvent('firstName', ' '))
+      expect(element('.error')).not.toBeNull();
+      expect(element('.error').textContent).toMatch(
+        'First name is required');
+    });
   });
 
   describe('last name field', () => {
