@@ -194,22 +194,22 @@ describe('CustomerForm', () => {
       });
     });
 
-  const itSubmitsNewValue = (fieldName) =>
+  const itSubmitsNewValue = (fieldName, value = 'newValue') =>
     it('saves new value when submitted', async () => {
       render(
         <CustomerForm
           {...validCustomer}
-          { ...{[fieldName]: 'aValue'} }
+          { ...{[fieldName]: 'existing'} }
         />
       )
       await change(
         field('customer', fieldName),
-        withEvent(fieldName, 'newValue')
+        withEvent(fieldName, value)
       );
       await submit(form('customer'));
 
       expect(requestBodyOf(window.fetch)).toMatchObject({
-        [fieldName]: 'newValue'
+        [fieldName]: value
       });
     });
 
@@ -255,7 +255,7 @@ describe('CustomerForm', () => {
     itRendersALabel('phoneNumber', 'Phone number')
     itAssignsAnIdThatMatchesTheLabelId('phoneNumber')
     itSubmitsExistingValue('phoneNumber', '12345')
-    itSubmitsNewValue('phoneNumber', '56789')
+    itSubmitsNewValue('phoneNumber', '0123456789+()- ')
     itInvalidatesFieldWithValue('phoneNumber', ' ', 'Phone number is required')
     itInvalidatesFieldWithValue(
       'phoneNumber',
