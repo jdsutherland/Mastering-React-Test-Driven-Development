@@ -62,3 +62,36 @@ describe('childrenOf', () => {
     ).toEqual([<p>A</p>]);
   });
 });
+
+const type = typeName => element => element.type === typeName;
+
+describe('elementsMatching', () => {
+  let render, elementsMatching;
+
+  beforeEach(() => {
+    ({ render, elementsMatching } = createShallowRenderer());
+  });
+
+  it('finds multiple direct children', () => {
+    render(
+      <TestComponent>
+        <p>A</p>
+        <p>B</p>
+      </TestComponent>);
+
+    expect(elementsMatching(type('p'))).toEqual([
+      <p>A</p>,
+      <p>B</p>
+    ]);
+  });
+
+  it('finds indirect children', () => {
+    render(
+      <TestComponent>
+        <div>
+          <p>A</p>
+        </div>
+      </TestComponent>);
+    expect(elementsMatching(type('p'))).toEqual([<p>A</p>]);
+  });
+});
