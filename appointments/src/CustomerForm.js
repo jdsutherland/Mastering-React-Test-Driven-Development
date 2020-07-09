@@ -23,11 +23,14 @@ export const CustomerForm = ({
   const [validationErrors, setValidationErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = ({ target }) =>
+  const handleChange = ({ target }) => {
     setCustomer(customer => ({
       ...customer,
       [target.name]: target.value
     }))
+    const validationResult = validateMany(validators, customer);
+    setValidationErrors(validationResult)
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();

@@ -78,9 +78,27 @@ describe('CustomerForm', () => {
           field('customer', fieldName),
           withEvent(fieldName, value))
         expect(element('.error')).not.toBeNull();
-        expect(element('.error').textContent).toMatch( description);
+        expect(element('.error').textContent).toMatch(description);
       });
     }
+
+    const itClearsFieldError = (fieldName, value) => {
+      it(`clears ${fieldName} error when user corrects it`, () => {
+        render(<CustomerForm {...validCustomer} />)
+
+        blur(
+          field('customer', fieldName),
+          withEvent(fieldName, ' '))
+
+        change(
+          field('customer', fieldName),
+          withEvent(fieldName, value))
+        expect(element('.error')).toBeNull();
+      });
+    }
+    itClearsFieldError('firstName', 'Alice')
+    itClearsFieldError('lastName', 'Johnson')
+    itClearsFieldError('phoneNumber', '123123123')
 
     itInvalidatesFieldWithValue(
       'firstName',
