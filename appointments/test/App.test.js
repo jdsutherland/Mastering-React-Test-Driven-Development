@@ -9,6 +9,7 @@ import {
 } from './shallowHelpers';
 import { App } from '../src/App';
 import { AppointmentsDayViewLoader } from '../src/AppointmentsDayViewLoader';
+import { AppointmentFormLoader } from '../src/AppointmentFormLoader';
 import { CustomerForm } from '../src/CustomerForm';
 
 describe('App', () => {
@@ -64,4 +65,14 @@ describe('App', () => {
     ).not.toBeTruthy();
   });
 
+  const saveCustomer = customer =>
+    elementMatching(type(CustomerForm)).props.onSave(customer);
+
+  it('displays the AppointmentFormLoader after the CustomerForm is submitted', async () => {
+    beginAddingCustomerAndAppointment();
+    saveCustomer();
+    expect(
+      elementMatching(type(AppointmentFormLoader))
+    ).toBeDefined();
+  });
 });

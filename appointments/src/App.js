@@ -11,9 +11,16 @@ export const App = () => {
     []
   );
 
+  const transitionToAddAppointment = useCallback(
+    () => setView('addAppointment'),
+    []
+  );
+
   switch (view) {
     case 'addCustomer':
-      return <CustomerForm onSave={transitionToAddCustomer} />;
+      return <CustomerForm onSave={transitionToAddAppointment} />;
+    case 'addAppointment':
+      return <AppointmentFormLoader />
     default:
       return (
         <React.Fragment>
