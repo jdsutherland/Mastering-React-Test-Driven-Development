@@ -2,7 +2,7 @@
 
 A hair salon booking system
 
-## Runnign Tests
+## Running Tests
 `npx jest`
 
 ## Build
