@@ -84,4 +84,16 @@ describe('App', () => {
       elementMatching(type(AppointmentFormLoader)).props.customer
     ).toBe(customer);
   });
+
+  const saveAppointment = () => elementMatching(type(AppointmentFormLoader)).props.onSave();
+
+  it('renders AppointmentDayViewLoader after AppointmentForm is submitted', async () => {
+    beginAddingCustomerAndAppointment();
+    saveCustomer();
+    saveAppointment();
+    expect(
+      elementMatching(type(AppointmentsDayViewLoader))
+    ).toBeDefined();
+  });
+
 });
