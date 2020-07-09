@@ -37,6 +37,10 @@ export const CustomerForm = ({
       return
     }
 
+    await doSubmit()
+  }
+
+  const doSubmit = async () => {
     setSubmitting(true)
     const result = await window.fetch('/customers', {
       method: 'POST',
