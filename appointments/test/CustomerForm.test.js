@@ -181,6 +181,22 @@ describe('CustomerForm', () => {
       });
     });
 
+  const itInvalidatesFieldWithValue = (
+    fieldName,
+    value,
+    description
+  ) => {
+    it(`displays error after blur when ${fieldName} field is ${value}`, () => {
+      render(<CustomerForm />)
+
+      blur(
+        field('customer', fieldName),
+        withEvent(fieldName, value))
+      expect(element('.error')).not.toBeNull();
+      expect(element('.error').textContent).toMatch( description);
+    });
+  }
+
   describe('first name field', () => {
     itRendersAsATextBox('firstName')
     itIncludesTheExistingValue('firstName')
@@ -188,17 +204,7 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('firstName')
     itSubmitsExistingValue('firstName', 'value')
     itSubmitsNewValue('firstName')
-
-    it('displays an error after blur when the first name field is blank', () => {
-      render(<CustomerForm />)
-
-      blur(
-        field('customer', 'firstName'),
-        withEvent('firstName', ' '))
-      expect(element('.error')).not.toBeNull();
-      expect(element('.error').textContent).toMatch(
-        'First name is required');
-    });
+    itInvalidatesFieldWithValue('firstName', ' ', 'First name is required')
   });
 
   describe('last name field', () => {
@@ -208,17 +214,7 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('lastName')
     itSubmitsExistingValue('lastName', 'value')
     itSubmitsNewValue('lastName', 'newValue')
-
-    it('displays an error after blur when the first name field is blank', () => {
-      render(<CustomerForm />)
-
-      blur(
-        field('customer', 'lastName'),
-        withEvent('lastName', ' '))
-      expect(element('.error')).not.toBeNull();
-      expect(element('.error').textContent).toMatch(
-        'Last name is required');
-    });
+    itInvalidatesFieldWithValue('lastName', ' ', 'Last name is required')
   });
 
   describe('phone number field', () => {
