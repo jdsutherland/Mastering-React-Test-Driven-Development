@@ -208,6 +208,17 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('lastName')
     itSubmitsExistingValue('lastName', 'value')
     itSubmitsNewValue('lastName', 'newValue')
+
+    it('displays an error after blur when the first name field is blank', () => {
+      render(<CustomerForm />)
+
+      blur(
+        field('customer', 'lastName'),
+        withEvent('lastName', ' '))
+      expect(element('.error')).not.toBeNull();
+      expect(element('.error').textContent).toMatch(
+        'Last name is required');
+    });
   });
 
   describe('phone number field', () => {
