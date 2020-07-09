@@ -224,5 +224,6 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('phoneNumber')
     itSubmitsExistingValue('phoneNumber', '12345')
     itSubmitsNewValue('phoneNumber', '56789')
+    itInvalidatesFieldWithValue('phoneNumber', ' ', 'Phone number is required')
   });
 });

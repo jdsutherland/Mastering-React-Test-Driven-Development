@@ -43,7 +43,8 @@ export const CustomerForm = ({
   const handleBlur = ({ target }) => {
     const validators = {
       firstName: required('First name is required'),
-      lastName: required('Last name is required')
+      lastName: required('Last name is required'),
+      phoneNumber: required('Phone number is required')
     }
     const result = validators[target.name](target.value)
     setValidationErrors({
@@ -96,7 +97,9 @@ export const CustomerForm = ({
       id="phoneNumber"
       value={phoneNumber}
       onChange={handleChange}
+      onBlur={handleBlur}
     />
+    {renderError('phoneNumber')}
 
     <input type="submit" value="Add" />
   </form>
