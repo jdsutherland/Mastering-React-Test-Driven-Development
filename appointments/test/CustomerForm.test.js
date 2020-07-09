@@ -65,6 +65,17 @@ describe('CustomerForm', () => {
     expect(submitButton).not.toBeNull();
   });
 
+  it('disables the submit button when submitting', async () => {
+    render(<CustomerForm {...validCustomer} />);
+    act(() => {
+      ReactTestUtils.Simulate.submit(form('customer'));
+    });
+    const submitButton = element('input[type="submit"]');
+    await act(async () => {
+      expect(submitButton.disabled).toBeTruthy();
+    });
+  });
+
   describe('validation', () => {
     const itInvalidatesFieldWithValue = (
       fieldName,
