@@ -22,6 +22,9 @@ export const CustomerForm = ({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const validationResult = validateMany(customer);
+    if (anyErrors(validationResult)) return
+
     const result = await window.fetch('/customers', {
       method: 'POST',
       credentials: 'same-origin',
@@ -37,6 +40,18 @@ export const CustomerForm = ({
     }
   }
 
+  const anyErrors = errors =>
+    Object.values(errors).some(err => err !== undefined)
+
+  const validateMany = fields =>
+    Object.entries(fields).reduce(
+      (result, [name, value]) => ({
+        ...result,
+        [name]: validators[name](value)
+      }),
+      {}
+    )
+
   const required = description => value =>
     !value || value.trim() === '' ? description : undefined
 
@@ -48,17 +63,18 @@ export const CustomerForm = ({
       result || validator(value),
       undefined)
 
+  const validators = {
+    firstName: required('First name is required'),
+    lastName: required('Last name is required'),
+    phoneNumber: list(
+      required('Phone number is required'),
+      match(
+        /^[0-9+()\- ]*$/,
+        'Only numbers, spaces, and these symbols allowed: ( ) + -')
+    )
+  }
+
   const handleBlur = ({ target }) => {
-    const validators = {
-      firstName: required('First name is required'),
-      lastName: required('Last name is required'),
-      phoneNumber: list(
-        required('Phone number is required'),
-        match(
-          /^[0-9+()\- ]*$/,
-          'Only numbers, spaces, and these symbols allowed: ( ) + -')
-      )
-    }
     const result = validators[target.name](target.value)
     setValidationErrors({
       ...validationErrors,
