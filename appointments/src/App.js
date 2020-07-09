@@ -5,22 +5,23 @@ import { CustomerForm } from './CustomerForm';
 
 export const App = () => {
   const [view, setView] = useState('dayView');
+  const [customer, setCustomer] = useState();
 
   const transitionToAddCustomer = useCallback(
     () => setView('addCustomer'),
     []
   );
 
-  const transitionToAddAppointment = useCallback(
-    () => setView('addAppointment'),
-    []
-  );
+  const transitionToAddAppointment = useCallback((customer) => {
+    setCustomer(customer)
+    setView('addAppointment')
+  }, []);
 
   switch (view) {
     case 'addCustomer':
       return <CustomerForm onSave={transitionToAddAppointment} />;
     case 'addAppointment':
-      return <AppointmentFormLoader />
+      return <AppointmentFormLoader customer={customer}/>
     default:
       return (
         <React.Fragment>
