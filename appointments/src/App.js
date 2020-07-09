@@ -29,7 +29,7 @@ export const App = () => {
       return <AppointmentFormLoader customer={customer} onSave={transitionToDayView}/>
     default:
       return (
-        <React.Fragment>
+        <>
           <div className="button-bar">
             <button
               type="button"
@@ -39,7 +39,7 @@ export const App = () => {
             </button>
           </div>
           <AppointmentsDayViewLoader />
-        </React.Fragment>
+        </>
       );
   }
 };
