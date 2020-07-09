@@ -4,9 +4,12 @@ import {
   type,
   childrenOf,
   className,
+  click,
+  id,
 } from './shallowHelpers';
 import { App } from '../src/App';
 import { AppointmentsDayViewLoader } from '../src/AppointmentsDayViewLoader';
+import { CustomerForm } from '../src/CustomerForm';
 
 describe('App', () => {
   let render, elementMatching, child;
@@ -35,4 +38,15 @@ describe('App', () => {
     expect(buttons[0].type).toEqual('button');
     expect(buttons[0].props.children).toEqual('Add customer and appointment');
   });
+
+  const beginAddingCustomerAndAppointment = () => {
+    render(<App />);
+    click(elementMatching(id('addCustomer')));
+  };
+
+  it('displays the CustomerForm when button is clicked', async () => {
+    beginAddingCustomerAndAppointment();
+    expect(elementMatching(type(CustomerForm))).toBeDefined();
+  });
+
 });
