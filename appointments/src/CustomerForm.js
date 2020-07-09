@@ -23,7 +23,10 @@ export const CustomerForm = ({
   const handleSubmit = async (event) => {
     event.preventDefault();
     const validationResult = validateMany(customer);
-    if (anyErrors(validationResult)) return
+    if (anyErrors(validationResult)) {
+      setValidationErrors(validationResult)
+      return
+    }
 
     const result = await window.fetch('/customers', {
       method: 'POST',
